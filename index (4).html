@@ -1,0 +1,4665 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EconoSim KZ - Economic Simulation Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0f1e;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes gridBackground {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(20px);
+            }
+        }
+
+        .scroll-reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-reveal.visible {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* Navbar */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1rem 0;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #3b82f6;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #e0e7ff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #3b82f6;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .grid-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.03;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(59, 130, 246, 0.05) 25%, rgba(59, 130, 246, 0.05) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.05) 75%, rgba(59, 130, 246, 0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(59, 130, 246, 0.05) 25%, rgba(59, 130, 246, 0.05) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.05) 75%, rgba(59, 130, 246, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            animation: gridBackground 20s linear infinite;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            z-index: 10;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Description Section */
+        .description {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .description-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #3b82f6;
+        }
+
+        .description-text p {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateX(5px);
+        }
+
+        .feature-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feature-card-title span {
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .description {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Stepper */
+        .stepper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            background: rgba(59, 130, 246, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #e0e7ff;
+        }
+
+        .step p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #e0e7ff;
+        }
+
+        .feature p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .tech-category {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 2rem;
+            border-radius: 0.75rem;
+        }
+
+        .tech-category h3 {
+            font-size: 1.2rem;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+
+        .tech-list {
+            list-style: none;
+        }
+
+        .tech-list li {
+            padding: 0.5rem 0;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tech-list li:before {
+            content: "▸";
+            color: #10b981;
+        }
+
+        .code-block {
+            background: #0a0f1e;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-top: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #10b981;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .tech-stack {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Screenshot Section */
+        .screenshot-section {
+            text-align: center;
+        }
+
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 2px dashed rgba(59, 130, 246, 0.3);
+            border-radius: 1rem;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+        }
+
+        .screenshot-caption {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+
+        /* Team Section */
+        .team {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .team-member {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .avatar-initials {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .team-member h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #e0e7ff;
+        }
+
+        .team-role {
+            color: #3b82f6;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .team-bio {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .team-achievements {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid #10b981;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, #3b82f6 0%, #10b981 100%);
+        }
+
+        .timeline-items {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.5rem;
+            align-items: flex-start;
+            position: relative;
+            margin-left: 2rem;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            order: 0;
+        }
+
+        .timeline-dot {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            border: 4px solid #0a0f1e;
+            border-radius: 50%;
+            z-index: 10;
+            flex-shrink: 0;
+            margin-top: 0.5rem;
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        }
+
+        .timeline-content {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+        }
+
+        .timeline-date {
+            color: #3b82f6;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.2rem;
+            margin: 0.5rem 0 1rem;
+            color: #e0e7ff;
+        }
+
+        .timeline-content p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+
+            .timeline-item {
+                grid-template-columns: 1fr;
+                margin-left: 60px;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content {
+                order: 0;
+            }
+        }
+
+        /* Sponsor Section */
+        .sponsor {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .sponsor h3 {
+            font-size: 0.9rem;
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        .sponsor-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .sponsor-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            border: 3px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .sponsor-info {
+            text-align: left;
+        }
+
+        .sponsor-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #e0e7ff;
+        }
+
+        .sponsor-title {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .sponsor-position {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .sponsor-aid {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 3px solid #10b981;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: left;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 1.5rem;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 15, 30, 0.95);
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 3rem 2rem 1.5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #3b82f6;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Mystery Card Section */
+        .mystery-card-container {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(59, 130, 246, 0.08) 100%);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .mystery-card-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.15);
+        }
+
+        .mystery-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .mystery-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+
+        .mystery-btn:active {
+            transform: scale(0.98);
+        }
+
+        .mystery-card-container.hidden {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1rem;
+            }
+
+            nav ul li:nth-child(3),
+            nav ul li:nth-child(4) {
+                display: none;
+            }
+
+            section {
+                padding: 3rem 1rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .stepper {
+                grid-template-columns: 1fr;
+            }
+
+            .team {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .tech-stack {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 8px;
+            }
+
+            .timeline-dot {
+                margin-top: 0.5rem;
+            }
+
+            .timeline-item {
+                grid-template-columns: auto 1fr;
+                margin-left: 1.5rem;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content {
+                order: 0;
+            }
+
+            .sponsor-content {
+                flex-direction: column;
+            }
+
+            .sponsor-info {
+                text-align: center;
+            }
+
+            .description {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+
+/* GAME STYLES */
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .game-container {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            overflow: hidden;
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+        }
+
+        .game-container .container {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+            padding: 15px 20px;
+            border-bottom: 2px solid #0d47a1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .header-center {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .kpi-mini {
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .kpi-mini-value {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .kpi-mini.red .kpi-mini-value { color: #ff6b6b; }
+        .kpi-mini.yellow .kpi-mini-value { color: #ffd93d; }
+        .kpi-mini.green .kpi-mini-value { color: #51cf66; }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .quarter-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            gap: 8px;
+            padding: 8px;
+            background: #121212;
+        }
+
+        /* Left Panel - Controls */
+        .left-panel {
+            width: 280px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 4px;
+            overflow-y: auto;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .control-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+        }
+
+        .control-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #64b5f6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .control-item {
+            margin-bottom: 12px;
+        }
+
+        .control-label {
+            font-size: 11px;
+            color: #bbb;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #2196f3;
+            cursor: pointer;
+            box-shadow: 0 0 4px rgba(33, 150, 243, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #2196f3;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 4px rgba(33, 150, 243, 0.5);
+        }
+
+        .range-value {
+            font-size: 12px;
+            color: #64b5f6;
+            background: #2c2c2c;
+            padding: 3px 6px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        button.action-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 3px;
+            font-size: 11px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        button.action-btn:hover {
+            background: #1976d2;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.4);
+        }
+
+        button.action-btn.active {
+            background: #51cf66;
+        }
+
+        select {
+            width: 100%;
+            padding: 6px;
+            background: #2c2c2c;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            border-radius: 3px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* Center Panel - Dashboard */
+        .center-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow: hidden;
+        }
+
+        .dashboard-top {
+            display: flex;
+            gap: 8px;
+            height: 50%;
+        }
+
+        .map-container {
+            flex: 1;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .map-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #64b5f6;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        #map-canvas {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #333;
+            border-radius: 2px;
+            background: #0d0d0d;
+        }
+
+        /* Help Button */
+        .help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: 0.2s;
+        }
+
+        .help-button:hover {
+            background: linear-gradient(135deg, #42a5f5 0%, #2196f3 100%);
+            box-shadow: 0 6px 16px rgba(33, 150, 243, 0.6);
+        }
+
+        /* Tutorial Modal */
+        .tutorial-modal {
+            display: none;
+        }
+
+        .tutorial-modal.active {
+            display: flex;
+        }
+
+        .tutorial-content {
+            background: #1e1e1e;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+        }
+
+        .tutorial-content h2 {
+            color: #64b5f6;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .tutorial-section {
+            margin-bottom: 20px;
+        }
+
+        .tutorial-section h3 {
+            color: #ffd93d;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .tutorial-section p {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #d0d0d0;
+            margin-bottom: 8px;
+        }
+
+        .tutorial-section ul {
+            margin-left: 20px;
+            font-size: 12px;
+            color: #d0d0d0;
+            line-height: 1.6;
+        }
+
+        .tutorial-section li {
+            margin-bottom: 5px;
+        }
+
+        .tutorial-highlight {
+            background: rgba(33, 150, 243, 0.2);
+            padding: 10px;
+            border-left: 3px solid #2196f3;
+            margin: 10px 0;
+            border-radius: 2px;
+        }
+
+        .tutorial-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        .tutorial-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .tutorial-btn.next {
+            background: #51cf66;
+            color: white;
+        }
+
+        .tutorial-btn.next:hover {
+            background: #40c057;
+        }
+
+        .tutorial-btn.close {
+            background: #666;
+            color: white;
+        }
+
+        .tutorial-btn.close:hover {
+            background: #777;
+        }
+
+        .tutorial-indicator {
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            margin-top: 15px;
+        }
+
+        /* Debug Panel */
+        .debug-panel {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            background: #222;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 10px;
+            color: #aaa;
+            max-width: 200px;
+            max-height: 120px;
+            overflow-y: auto;
+            display: none;
+            z-index: 998;
+            line-height: 1.4;
+        }
+
+        .debug-panel.active {
+            display: block;
+        }
+
+        .debug-panel div {
+            margin-bottom: 3px;
+        }
+
+        .kpi-panel {
+            width: 220px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 12px;
+            overflow-y: auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .kpi-item {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2c2c2c;
+        }
+
+        .kpi-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .kpi-name {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .kpi-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kpi-value {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .kpi-value.red { color: #ff6b6b; }
+        .kpi-value.yellow { color: #ffd93d; }
+        .kpi-value.green { color: #51cf66; }
+
+        .kpi-trend {
+            font-size: 11px;
+            flex: 1;
+        }
+
+        .trend-line {
+            height: 20px;
+            background: #2c2c2c;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trend-line svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .graphs-container {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .graphs-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #64b5f6;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .graph {
+            height: 110px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .graph:last-child {
+            margin-bottom: 0;
+        }
+
+        .graph-title {
+            font-size: 11px;
+            color: #bbb;
+            margin-bottom: 5px;
+        }
+
+        canvas[data-type="graph"] {
+            width: 100%;
+            height: 80px;
+            background: #2c2c2c;
+            border-radius: 2px;
+        }
+
+        /* Right Panel - Events */
+        .right-panel {
+            width: 280px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 4px;
+            overflow-y: auto;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .events-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #64b5f6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #333;
+        }
+
+        .events-log {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .event-item {
+            background: linear-gradient(135deg, #2c2c2c 0%, #1f1f1f 100%);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid #2196f3;
+            border-radius: 2px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #d0d0d0;
+        }
+
+        .event-item.negative {
+            border-left-color: #ff6b6b;
+            background: linear-gradient(135deg, rgba(255,107,107,0.1) 0%, rgba(31,31,31,0.9) 100%);
+        }
+
+        .event-item.positive {
+            border-left-color: #51cf66;
+            background: linear-gradient(135deg, rgba(81,207,102,0.1) 0%, rgba(31,31,31,0.9) 100%);
+        }
+
+        .event-time {
+            font-size: 9px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* Bottom - Action Bar */
+        .bottom-bar {
+            background: #1e1e1e;
+            border-top: 2px solid #333;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+        }
+
+        .summary-stat {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .summary-stat-value {
+            color: #64b5f6;
+            font-weight: bold;
+        }
+
+        .next-quarter-btn {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(81, 207, 102, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .next-quarter-btn:hover {
+            background: linear-gradient(135deg, #63e063 0%, #40c057 100%);
+            box-shadow: 0 4px 12px rgba(81, 207, 102, 0.5);
+        }
+
+        .next-quarter-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Modal - Final Screen */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1e1e1e;
+            border: 2px solid #0d47a1;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+        }
+
+        .modal-content h2 {
+            color: #64b5f6;
+            margin-bottom: 20px;
+            font-size: 24px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+        }
+
+        .final-score {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .final-kpi {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .final-kpi-item {
+            background: #2c2c2c;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .final-kpi-item.red {
+            border-left-color: #ff6b6b;
+        }
+
+        .final-kpi-item.yellow {
+            border-left-color: #ffd93d;
+        }
+
+        .final-kpi-item.green {
+            border-left-color: #51cf66;
+        }
+
+        .final-kpi-name {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .final-kpi-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .final-narrative {
+            background: #2c2c2c;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            line-height: 1.6;
+            font-size: 12px;
+            color: #d0d0d0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .modal-btn.restart {
+            background: #51cf66;
+            color: white;
+        }
+
+        .modal-btn.restart:hover {
+            background: #40c057;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        </style>
+</head>
+<body>
+    <script>
+        // ===== GLOBAL TOGGLE FUNCTIONS (Must be defined before DOM elements reference them) =====
+        function switchToGame() {
+            console.log('✓ switchToGame() called');
+            const marketingView = document.getElementById('marketingView');
+            const gameView = document.getElementById('gameView');
+            
+            if (!marketingView || !gameView) {
+                console.error('❌ Divs not found! marketing:', !!marketingView, 'game:', !!gameView);
+                return;
+            }
+            
+            marketingView.style.display = 'none';
+            gameView.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            console.log('✓ Game view displayed successfully');
+        }
+
+        function switchToMarketing() {
+            console.log('✓ switchToMarketing() called');
+            const marketingView = document.getElementById('marketingView');
+            const gameView = document.getElementById('gameView');
+            
+            if (!marketingView || !gameView) {
+                console.error('❌ Divs not found! marketing:', !!marketingView, 'game:', !!gameView);
+                return;
+            }
+            
+            marketingView.style.display = 'block';
+            gameView.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            window.scrollTo(0, 0);
+            console.log('✓ Marketing view displayed successfully');
+        }
+    </script>
+
+    <!-- MARKETING VIEW -->
+    <div id="marketingView">
+    <!-- Navbar -->
+    <nav>
+        <div class="container">
+            <div class="logo">ECONOSIM KZ</div>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#tech">Technology</a></li>
+                <li><a href="#team">Team</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="grid-background"></div>
+        <div class="hero-content">
+            <h1>Manage Kazakhstan's Economy</h1>
+            <p>Interactive economic simulation for students — make real decisions, observe real consequences.</p>
+            <div class="btn-group">
+                <button onclick="switchToGame()" class="btn btn-primary">🎮 Launch Alpha Version</button>
+                <a href="#about" class="btn btn-secondary">Learn More</a>
+            </div>
+            <div class="badges">
+                <div class="badge">40 Quarters of Simulation</div>
+                <div class="badge">17 Kazakhstan Regions</div>
+                <div class="badge">5 Policy Systems</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Description -->
+    <section id="about">
+        <div class="container">
+            <h2>Why EconoSim KZ?</h2>
+            <div class="description">
+                <div class="description-text">
+                    <h3>The Problem</h3>
+                    <p>Economics is taught passively—no hands-on experience, no real decision-making. Students graduate without understanding how policy choices create consequences.</p>
+                    <h3>Our Solution</h3>
+                    <p>EconoSim KZ is the first economic simulator built on real Kazakhstan data. Players become economic advisors with full control over monetary, fiscal, structural, and social policies. Every decision creates ripple effects.</p>
+                    <h3>What Makes It Unique</h3>
+                    <p>
+                        ✓ Built on Kazakhstan's real economic statistics (2015-2024)<br>
+                        ✓ 8 interconnected KPIs reflecting real policy relationships<br>
+                        ✓ Random external shocks (oil crashes, recessions, droughts)<br>
+                        ✓ Immediate feedback on policy effectiveness<br>
+                        ✓ No external libraries—pure web technology
+                    </p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-card-title">
+                            <span>🎯</span>
+                            Practical Learning
+                        </div>
+                        <p>Test economic theories through gameplay. Cause-and-effect relationships become intuitive.</p>
+                    </div>
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-card-title">
+                            <span>🇰🇿</span>
+                            Real Kazakhstan Data
+                        </div>
+                        <p>Simulation powered by actual statistics, inflation rates, and structural conditions of Kazakhstan.</p>
+                    </div>
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-card-title">
+                            <span>⚡</span>
+                            Instant Feedback
+                        </div>
+                        <p>See how inflation, unemployment, and growth respond to your policies in real-time.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section>
+        <div class="container">
+            <h2>How the Game Works</h2>
+            <div class="stepper">
+                <div class="step scroll-reveal">
+                    <div class="step-number">1</div>
+                    <h3>Choose Your Starting Point</h3>
+                    <p>Select your starting year (2015-2019) and difficulty mode. Set your initial economic policy stance.</p>
+                </div>
+                <div class="step scroll-reveal">
+                    <div class="step-number">2</div>
+                    <h3>Control 5 Policy Systems</h3>
+                    <p>Manage monetary policy (rates, exchange regime), fiscal policy (taxes, spending), structural initiatives, external relations, and social programs.</p>
+                </div>
+                <div class="step scroll-reveal">
+                    <div class="step-number">3</div>
+                    <h3>React to Economic Shocks</h3>
+                    <p>Navigate random events: oil price crashes, global recessions, droughts, or investment surges. Test your crisis management skills.</p>
+                </div>
+                <div class="step scroll-reveal">
+                    <div class="step-number">4</div>
+                    <h3>Get Your Final Grade</h3>
+                    <p>After 40 quarters (10 years), receive an A-F grade based on economic targets. Compare your performance to real Kazakhstan history.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Functional Requirements -->
+    <section id="features">
+        <div class="container">
+            <h2>Game Features</h2>
+            <div class="features">
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📊</div>
+                    <h3>Quarterly Simulation</h3>
+                    <p>Play through 40 quarters of real-time economic management from 2015-2024.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>17 Regional Map</h3>
+                    <p>Interactive map of all Kazakhstan regions with economic status indicators.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📈</div>
+                    <h3>8 Real-Time KPIs</h3>
+                    <p>Track GDP growth, inflation, unemployment, exchange rate, budget balance, oil dependency, public trust, and foreign investment.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">🎛️</div>
+                    <h3>5 Control Systems</h3>
+                    <p>Manage monetary, fiscal, structural, external, and social policies with precision sliders.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">⚠️</div>
+                    <h3>Economic Shocks</h3>
+                    <p>Random events test your decision-making: oil crashes, recessions, droughts, rating upgrades.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📋</div>
+                    <h3>Three Game Modes</h3>
+                    <p>Historical (guided targets), Free Play (sandbox), and Challenge (strict KPI targets).</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📊</div>
+                    <h3>Final Report</h3>
+                    <p>Grade (A-F) + detailed KPI analysis + policy narrative performance review.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📉</div>
+                    <h3>Trend Visualization</h3>
+                    <p>Real-time charts show GDP growth, inflation, and exchange rate trends across quarters.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Stack -->
+    <section id="tech">
+        <div class="container">
+            <h2>Technology Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-category">
+                    <h3>Frontend Architecture</h3>
+                    <ul class="tech-list">
+                        <li><strong>HTML5</strong> - Semantic markup & Canvas API</li>
+                        <li><strong>CSS3</strong> - Dark theme with gradients & animations</li>
+                        <li><strong>Vanilla JavaScript</strong> - No frameworks, pure ES6+</li>
+                        <li><strong>Canvas Graphics</strong> - Regional maps & trend charts</li>
+                        <li><strong>Google Fonts</strong> - Inter typeface</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>Game Engine & Data</h3>
+                    <ul class="tech-list">
+                        <li><strong>Economic Model</strong> - Real policy relationships</li>
+                        <li><strong>Static JSON Data</strong> - Kazakhstan historical stats</li>
+                        <li><strong>Dynamic Simulation</strong> - Quarter-to-quarter calculations</li>
+                        <li><strong>Event System</strong> - Random shock generation</li>
+                        <li><strong>State Management</strong> - Game state persistence</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-block">
+// Simplified GDP calculation engine
+function calculateGDPGrowth(rate, spending, oilPrice, shocks) {
+    let growth = 3.0; // Base growth
+    growth -= (rate - 10) * 0.15; // Rate effect
+    growth += (spending - 25) * 0.05; // Fiscal multiplier
+    growth -= Math.max(0, 30 - oilPrice) * 0.02; // Oil price
+    growth += shocks.inflow * 0.5; // External boost
+    return Math.max(-5, Math.min(10, growth));
+}
+
+// Policy cascade: inflation → exchange rate → investment
+function simulateMonetaryTransmission(policies) {
+    let inflation = 5 + (policies.rate - 10) * -0.2;
+    let exRate = 380 + (inflation - 5) * 3;
+    return { inflation, exchangeRate: exRate };
+}</div>
+
+            <p style="color: #cbd5e1; margin-top: 2rem; text-align: center; font-size: 0.95rem;">
+                <strong>Deployment:</strong> GitHub Pages | <strong>Repository:</strong> github.com/EconoSimKZ/platform
+            </p>
+        </div>
+    </section>
+
+    <!-- Prototype Screenshot -->
+    <section>
+        <div class="container" style="text-align: center;">
+            <h2>Game Interface Preview</h2>
+            <div style="display: flex; justify-content: center;">
+                <img src="./dashboard.png" alt="EconoSim Dashboard" style="width: 100%; max-width: 1000px; border-radius: 1rem; border: 2px solid rgba(59, 130, 246, 0.3); margin: 2rem 0; box-shadow: 0 20px 50px rgba(59, 130, 246, 0.1);">
+            </div>
+            <p class="screenshot-caption">Main Dashboard: Regional map, policy control panel, 8 KPIs, and live event feed</p>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team">
+        <div class="container">
+            <h2>Meet the Team</h2>
+            <div class="team">
+                <div class="team-member scroll-reveal">
+                    <div class="avatar">
+                        <div class="avatar-initials">БС</div>
+                    </div>
+                    <h3>Berikbay Sanzhar</h3>
+                    <div class="team-role">Fundraiser, Developer, Designer</div>
+                    <p class="team-bio">Designed the game concept based on actual Kazakhstan economic data. Developed simulation engine and visual interface. Passionate about making economics engaging.</p>
+                    <div class="team-achievements">
+                        <strong>🔬 Achievement:</strong> "Strong Chemists" — Applied chemistry knowledge to system optimization
+                    </div>
+                </div>
+                <div class="team-member scroll-reveal">
+                    <div class="avatar">
+                        <div class="avatar-initials">МК</div>
+                    </div>
+                    <h3>Mansur Kurganov</h3>
+                    <div class="team-role">Developer, Designer</div>
+                    <p class="team-bio">Built the interactive dashboard and real-time simulation engine. Created responsive UI for desktop and mobile. Focused on making economics intuitive and visual.</p>
+                    <div class="team-achievements">
+                        <strong>💡 Vision:</strong> "Making economics accessible to every student like me"
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section>
+        <div class="container">
+            <h2>Development Timeline</h2>
+            <div class="timeline scroll-reveal">
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 1-3, 2025</div>
+                        <h3>Design Sprint Kickoff</h3>
+                        <p>Completed game design document, researched Kazakhstan's economic indicators 2015-2024, defined policy system relationships and KPI targets.</p>
+                    </div>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 4-7, 2025</div>
+                        <h3>Core Engine Build</h3>
+                        <p>Built core simulation engine, implemented policy formula system, created dashboard UI with Canvas graphs, regional map, and event system.</p>
+                    </div>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 8-11, 2025</div>
+                        <h3>Integration & Testing</h3>
+                        <p>Alpha testing with student groups, balance economy parameters, add tutorial system, implement shock events, refine UI responsiveness.</p>
+                    </div>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 12-14, 2025</div>
+                        <h3>Launch Preparation</h3>
+                        <p>Final polish and bug fixes, publish educational materials, prepare marketing content, ready for immediate public release and integration.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Sponsor -->
+    <section>
+        <div class="container">
+            <h2 style="margin-bottom: 2rem;">Lead Sponsor</h2>
+            <div class="sponsor scroll-reveal">
+                <h3>Principal Sponsor</h3>
+                <div class="sponsor-content">
+                    <img src="./sponsor.jpg" alt="Erkebulan Karagonisov" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #3b82f6; object-fit: cover;">
+                    <div class="sponsor-info">
+                        <div class="sponsor-name">Erkebulan Karagonisov</div>
+                        <div class="sponsor-title">Director, National Bank of Kazakhstan Branch — Pavlodar</div>
+                        <div class="sponsor-position">Supported the project with essential resources and expertise</div>
+                        <div class="sponsor-aid">
+                            <strong>Sponsorship Package:</strong><br>
+                            ✓ Two premium Snickers bars<br>
+                            ✓ Unlimited 5G internet access<br>
+                            ✓ Unrestricted "Maxi Tea" peach beverages for endless coding sessions
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Before Footer -->
+    <section style="padding: 4rem 2rem;">
+        <div class="cta-section scroll-reveal">
+            <h2>Ready to Take Control?</h2>
+            <p>Step into the role of Kazakhstan's economic advisor. Make decisions. Face consequences. Learn economics through play.</p>
+            <button onclick="switchToGame()" class="btn btn-primary">🎮 Launch Alpha Version</button>
+        </div>
+    </section>
+
+    <!-- Mystery Card -->
+    <section style="padding: 4rem 2rem;">
+        <div id="mysteryCard" class="mystery-card-container scroll-reveal">
+            <img src="./mystery-card.png" alt="Mystery Card">
+            <button class="mystery-btn" onclick="removeMysteryCard()">Нажать чтобы убрать</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ECONOSIM KZ</h3>
+                <p style="color: #cbd5e1; font-size: 0.9rem;">Interactive economic simulator for studying Kazakhstan's economy through gameplay.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Project</h3>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#tech">Technology</a></li>
+                    <li><a href="#team">Team</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">GitHub Repository</a></li>
+                    <li><a href="#">Game Documentation</a></li>
+                    <li><a href="#">Educational Guide</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <ul>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">Email</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 EconoSim KZ. All rights reserved. Built with pure web technology.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll Reveal Script -->
+    <script>
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Mystery card removal function
+        function removeMysteryCard() {
+            const mysteryCard = document.getElementById('mysteryCard');
+            mysteryCard.classList.add('hidden');
+            setTimeout(() => {
+                mysteryCard.style.display = 'none';
+            }, 300);
+        }
+    </script>
+    </div>
+
+    <!-- GAME VIEW -->
+    <div id="gameView" class="game-container" style="display:none;">
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>ECONOSIM KZ</h1>
+            </div>
+            <div class="header-center">
+                <div class="kpi-mini green">
+                    <div>ВВП</div>
+                    <div class="kpi-mini-value" id="header-gdp">3.2 трлн ₸</div>
+                </div>
+                <div class="kpi-mini yellow">
+                    <div>Инфляция</div>
+                    <div class="kpi-mini-value" id="header-inflation">5.2%</div>
+                </div>
+                <div class="kpi-mini red">
+                    <div>Безработица</div>
+                    <div class="kpi-mini-value" id="header-unemployment">4.8%</div>
+                </div>
+                <div class="kpi-mini green">
+                    <div>Тенге</div>
+                    <div class="kpi-mini-value" id="header-exchange">380 ₸/$</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="quarter-display" id="quarter-display">Q1 2015</div>
+                <button onclick="switchToMarketing()" style="margin-left: 20px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; align-self: center;">← Назад</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel - Controls -->
+            <div class="left-panel">
+                <!-- Monetary Policy -->
+                <div class="control-section">
+                    <div class="control-title">Монетарная политика</div>
+                    
+                    <div class="control-item">
+                        <label class="control-label">Базовая ставка (%)</label>
+                        <input type="range" id="rate" min="5" max="20" value="10" step="0.5">
+                        <div class="range-value" id="rate-value">10%</div>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="control-label">Валютный режим</label>
+                        <select id="exchange-regime">
+                            <option value="fixed">Фиксированный</option>
+                            <option value="managed" selected>Управляемый плав.</option>
+                            <option value="float">Свободный флоат</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="control-label">Денежная масса (%)</label>
+                        <input type="range" id="money-supply" min="80" max="120" value="100" step="2">
+                        <div class="range-value" id="money-supply-value">100%</div>
+                    </div>
+                </div>
+
+                <!-- Fiscal Policy -->
+                <div class="control-section">
+                    <div class="control-title">Фискальная политика</div>
+                    
+                    <div class="control-item">
+                        <label class="control-label">Расходы (% ВВП)</label>
+                        <input type="range" id="spending" min="15" max="35" value="25" step="1">
+                        <div class="range-value" id="spending-value">25%</div>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="control-label">Налоги корпоративные (%)</label>
+                        <input type="range" id="tax-rate" min="10" max="30" value="20" step="1">
+                        <div class="range-value" id="tax-rate-value">20%</div>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="control-label">Использование Нацфонда (%)</label>
+                        <input type="range" id="fund-usage" min="0" max="50" value="10" step="5">
+                        <div class="range-value" id="fund-usage-value">10%</div>
+                    </div>
+                </div>
+
+                <!-- Structural Policy -->
+                <div class="control-section">
+                    <div class="control-title">Структурная политика</div>
+                    
+                    <button class="action-btn" id="btn-industry">Индустриализация</button>
+                    <button class="action-btn" id="btn-sme">Поддержка МСБ</button>
+                    <button class="action-btn" id="btn-agro">Развитие аграрии</button>
+                    <button class="action-btn" id="btn-tech">Технохаб</button>
+                    <button class="action-btn" id="btn-tourism">Туризм</button>
+                </div>
+
+                <!-- External Policy -->
+                <div class="control-section">
+                    <div class="control-title">Внешнеэконом. политика</div>
+                    
+                    <div class="control-item">
+                        <label class="control-label">Торговые соглашения</label>
+                        <select id="trade-agreement">
+                            <option value="eaeu" selected>ЕАЭС</option>
+                            <option value="eu">ЕС</option>
+                            <option value="asia">Азиатские рынки</option>
+                            <option value="balanced">Сбалансированные</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="control-label">Привлечение ИПИ</label>
+                        <input type="range" id="fpi-openness" min="0" max="100" value="50" step="10">
+                        <div class="range-value" id="fpi-openness-value">50%</div>
+                    </div>
+                </div>
+
+                <!-- Social Policy -->
+                <div class="control-section">
+                    <div class="control-title">Социальная политика</div>
+                    
+                    <div class="control-item">
+                        <label class="control-label">Финансирование здравоохр.</label>
+                        <input type="range" id="healthcare" min="2" max="6" value="3.5" step="0.5">
+                        <div class="range-value" id="healthcare-value">3.5%</div>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="control-label">Финансирование образ.</label>
+                        <input type="range" id="education" min="3" max="8" value="5" step="0.5">
+                        <div class="range-value" id="education-value">5%</div>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="control-label">Соц. выплаты (% ВВП)</label>
+                        <input type="range" id="social-benefits" min="1" max="5" value="2" step="0.5">
+                        <div class="range-value" id="social-benefits-value">2%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Panel -->
+            <div class="center-panel">
+                <div class="dashboard-top">
+                    <!-- Map -->
+                    <div class="map-container">
+                        <div class="map-title">Карта регионов (нажмите для подробнее)</div>
+                        <canvas id="map-canvas"></canvas>
+                    </div>
+
+                    <!-- KPI Panel -->
+                    <div class="kpi-panel">
+                        <div style="font-size: 12px; font-weight: bold; color: #64b5f6; margin-bottom: 12px; text-transform: uppercase;">КПИ</div>
+                        <div id="kpi-list"></div>
+                    </div>
+                </div>
+
+                <!-- Graphs -->
+                <div class="graphs-container">
+                    <div class="graphs-title">Тренды показателей</div>
+                    <div id="graphs-area"></div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Events -->
+            <div class="right-panel">
+                <div class="events-title">События</div>
+                <div class="events-log" id="events-log"></div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="bottom-bar">
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <span>Бюджет:</span>
+                    <span class="summary-stat-value" id="budget-status">+0.5% ВВП</span>
+                </div>
+                <div class="summary-stat">
+                    <span>Резервы:</span>
+                    <span class="summary-stat-value" id="reserves-status">45 млрд $</span>
+                </div>
+                <div class="summary-stat">
+                    <span>Доверие:</span>
+                    <span class="summary-stat-value" id="trust-status">65/100</span>
+                </div>
+            </div>
+            <button class="next-quarter-btn" id="next-quarter">СЛЕДУЮЩИЙ КВАРТАЛ</button>
+        </div>
+    </div>
+
+    <!-- Final Screen Modal -->
+    <div class="modal" id="final-modal">
+        <div class="modal-content">
+            <h2>Конец симуляции: 2024</h2>
+            <div class="final-score" id="final-grade">A-</div>
+            <div class="final-kpi" id="final-kpi-list"></div>
+            <div class="final-narrative" id="final-narrative"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn restart" id="restart-btn">Играть Снова</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div class="modal tutorial-modal" id="tutorial-modal">
+        <div class="tutorial-content" id="tutorial-content">
+            <!-- Content generated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Help Button -->
+    <button class="help-button" id="help-btn" title="Справочник и обучение">?</button>
+
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debug-panel"></div>
+
+    <script>
+        // GAME STATE
+        const gameState = {
+            currentQuarter: { year: 2015, quarter: 1 },
+            quarterCount: 0,
+            maxQuarters: 40,
+            
+            // KPI Values
+            kpis: {
+                gdp: 170,           // billion USD
+                gdpGrowth: 3.2,     // %
+                inflation: 5.2,     // %
+                unemployment: 4.8,  // %
+                exchangeRate: 380,  // ₸ per $
+                budgetBalance: 0.5, // % of GDP
+                oilDependency: 35,  // % of GDP
+                publicTrust: 65,    // 0-100
+                foreignInvestment: 8 // billion USD
+            },
+
+            // Historical KPI data
+            kpiHistory: {
+                gdp: [170],
+                gdpGrowth: [3.2],
+                inflation: [5.2],
+                unemployment: [4.8],
+                exchangeRate: [380],
+                budgetBalance: [0.5],
+                oilDependency: [35],
+                publicTrust: [65],
+                foreignInvestment: [8]
+            },
+
+            // Policies
+            policies: {
+                rate: 10,
+                exchangeRegime: 'managed',
+                moneySupply: 100,
+                spending: 25,
+                taxRate: 20,
+                fundUsage: 10,
+                industry: false,
+                sme: false,
+                agro: false,
+                tech: false,
+                tourism: false,
+                tradeAgreement: 'eaeu',
+                fpiOpenness: 50,
+                healthcare: 3.5,
+                education: 5,
+                socialBenefits: 2
+            },
+
+            // Resources
+            reserves: 45,           // billion USD
+            nationalFund: 150,      // billion USD
+            debt: 20,               // billion USD
+
+            // Events log
+            events: []
+        };
+
+        // Utility functions
+        function getQuarterString(year, quarter) {
+            return `Q${quarter} ${year}`;
+        }
+
+        function validateInput(element, min, max) {
+            const value = parseFloat(element.value);
+            if (isNaN(value)) element.value = min;
+            if (value < min) element.value = min;
+            if (value > max) element.value = max;
+            return parseFloat(element.value);
+        }
+
+        function addEvent(text, type = 'neutral') {
+            gameState.events.unshift({
+                text: text,
+                type: type,
+                quarter: gameState.quarterCount
+            });
+
+            const eventItem = document.createElement('div');
+            eventItem.className = `event-item ${type === 'negative' ? 'negative' : type === 'positive' ? 'positive' : ''}`;
+            eventItem.innerHTML = `
+                <div>${text}</div>
+                <div class="event-time">${getQuarterString(gameState.currentQuarter.year, gameState.currentQuarter.quarter)}</div>
+            `;
+            document.getElementById('events-log').appendChild(eventItem);
+
+            // Keep only last 20 events visible
+            const events = document.querySelectorAll('.event-item');
+            if (events.length > 20) {
+                events[events.length - 1].remove();
+            }
+        }
+
+        // Update UI
+        function updateUI() {
+            // Update quarter display
+            document.getElementById('quarter-display').textContent = 
+                getQuarterString(gameState.currentQuarter.year, gameState.currentQuarter.quarter);
+
+            // Update header KPIs
+            updateHeaderKPIs();
+            updateKPIPanel();
+            updateGraphs();
+            updateSummaryStats();
+            updatePoliciesDisplay();
+        }
+
+        function updateHeaderKPIs() {
+            document.getElementById('header-gdp').textContent = gameState.kpis.gdp.toFixed(1) + ' трлн ₸';
+            document.getElementById('header-inflation').textContent = gameState.kpis.inflation.toFixed(1) + '%';
+            document.getElementById('header-unemployment').textContent = gameState.kpis.unemployment.toFixed(1) + '%';
+            document.getElementById('header-exchange').textContent = gameState.kpis.exchangeRate.toFixed(0) + ' ₸/$';
+        }
+
+        function updateKPIPanel() {
+            const panel = document.getElementById('kpi-list');
+            panel.innerHTML = '';
+
+            const kpiConfigs = [
+                { key: 'gdpGrowth', label: 'Рост ВВП', unit: '%', thresholds: { red: [-10, 2], yellow: [2, 4], green: [4, 100] } },
+                { key: 'inflation', label: 'Инфляция', unit: '%', thresholds: { red: [10, 100], yellow: [4, 10], green: [1, 4] } },
+                { key: 'unemployment', label: 'Безработица', unit: '%', thresholds: { red: [9, 100], yellow: [5, 9], green: [0, 5] } },
+                { key: 'exchangeRate', label: 'Курс тенге', unit: '₸/$', thresholds: { red: [-100, 350], yellow: [350, 400], green: [400, 500] } },
+                { key: 'budgetBalance', label: 'Бюджет', unit: '% ВВП', thresholds: { red: [-100, -4], yellow: [-4, 0], green: [0, 100] } },
+                { key: 'oilDependency', label: 'Нефт. зав.', unit: '%', thresholds: { red: [50, 100], yellow: [30, 50], green: [0, 30] } },
+                { key: 'publicTrust', label: 'Доверие', unit: '/100', thresholds: { red: [0, 30], yellow: [30, 60], green: [60, 100] } },
+                { key: 'foreignInvestment', label: 'ИПИ', unit: 'млрд $', thresholds: { red: [0, 3], yellow: [3, 7], green: [7, 100] } }
+            ];
+
+            kpiConfigs.forEach(config => {
+                const value = gameState.kpis[config.key];
+                let statusClass = 'green';
+                
+                if (config.key === 'inflation' || config.key === 'unemployment' || config.key === 'oilDependency') {
+                    if (value >= config.thresholds.red[0]) statusClass = 'red';
+                    else if (value >= config.thresholds.yellow[0]) statusClass = 'yellow';
+                } else if (config.key === 'exchangeRate') {
+                    if (value <= 350 || value >= 500) statusClass = 'red';
+                    else if (value <= 360 || value >= 450) statusClass = 'yellow';
+                } else {
+                    if (value <= config.thresholds.red[1] || value >= config.thresholds.red[0]) statusClass = 'red';
+                    else if (value <= config.thresholds.yellow[1] || value >= config.thresholds.yellow[0]) statusClass = 'yellow';
+                }
+
+                const item = document.createElement('div');
+                item.className = 'kpi-item';
+                item.innerHTML = `
+                    <div class="kpi-name">${config.label}</div>
+                    <div class="kpi-row">
+                        <div class="kpi-value ${statusClass}">${value.toFixed(1)}${config.unit}</div>
+                        <div class="kpi-trend" style="width: 60px; height: 25px; background: #2c2c2c; border-radius: 2px;"></div>
+                    </div>
+                `;
+                panel.appendChild(item);
+            });
+        }
+
+        function updateGraphs() {
+            const container = document.getElementById('graphs-area');
+            container.innerHTML = '';
+
+            const graphs = [
+                { title: 'ВВП рост (%)', data: gameState.kpiHistory.gdpGrowth },
+                { title: 'Инфляция (%)', data: gameState.kpiHistory.inflation },
+                { title: 'Курс тенге (₸/$)', data: gameState.kpiHistory.exchangeRate }
+            ];
+
+            graphs.forEach(graph => {
+                const div = document.createElement('div');
+                div.className = 'graph';
+                div.innerHTML = `
+                    <div class="graph-title">${graph.title}</div>
+                    <canvas data-type="graph" data-values="${graph.data.join(',')}"></canvas>
+                `;
+                container.appendChild(div);
+                drawGraph(div.querySelector('canvas'), graph.data);
+            });
+        }
+
+        function drawGraph(canvas, data) {
+            if (!canvas || data.length === 0) return;
+
+            const ctx = canvas.getContext('2d');
+            const width = canvas.clientWidth;
+            const height = 80;
+            canvas.width = width;
+            canvas.height = height;
+
+            const padding = 15;
+            const graphWidth = width - 2 * padding;
+            const graphHeight = height - 2 * padding;
+
+            // Find min/max with reasonable bounds
+            let min = Math.min(...data);
+            let max = Math.max(...data);
+            
+            // Add 10% padding to min/max for better visualization
+            const range = Math.max(max - min, 1);
+            const padding_range = range * 0.1;
+            min = min - padding_range;
+            max = max + padding_range;
+            const finalRange = max - min || 1;
+
+            // Draw background
+            ctx.fillStyle = '#2c2c2c';
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw grid lines
+            ctx.strokeStyle = '#404040';
+            ctx.lineWidth = 0.5;
+            ctx.globalAlpha = 0.5;
+            for (let i = 0; i <= 4; i++) {
+                const y = padding + (graphHeight / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+
+            // Draw line
+            ctx.strokeStyle = '#2196f3';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            data.forEach((value, index) => {
+                const x = padding + (graphWidth / Math.max(1, data.length - 1)) * index;
+                const normalizedValue = (value - min) / finalRange;
+                const y = height - padding - normalizedValue * graphHeight;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            // Draw gradient fill
+            const gradient = ctx.createLinearGradient(0, padding, 0, height - padding);
+            gradient.addColorStop(0, 'rgba(33, 150, 243, 0.3)');
+            gradient.addColorStop(1, 'rgba(33, 150, 243, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            data.forEach((value, index) => {
+                const x = padding + (graphWidth / Math.max(1, data.length - 1)) * index;
+                const normalizedValue = (value - min) / finalRange;
+                const y = height - padding - normalizedValue * graphHeight;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.lineTo(width - padding, height - padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.closePath();
+            ctx.fill();
+
+            // Draw points
+            ctx.fillStyle = '#64b5f6';
+            data.forEach((value, index) => {
+                const x = padding + (graphWidth / Math.max(1, data.length - 1)) * index;
+                const normalizedValue = (value - min) / finalRange;
+                const y = height - padding - normalizedValue * graphHeight;
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Draw last point highlight
+            if (data.length > 0) {
+                const lastIdx = data.length - 1;
+                const x = padding + (graphWidth / Math.max(1, data.length - 1)) * lastIdx;
+                const normalizedValue = (data[lastIdx] - min) / finalRange;
+                const y = height - padding - normalizedValue * graphHeight;
+                
+                ctx.strokeStyle = '#ffd93d';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function updateSummaryStats() {
+            const budgetClass = gameState.kpis.budgetBalance >= 0 ? 'green' : 'red';
+            document.getElementById('budget-status').textContent = 
+                (gameState.kpis.budgetBalance >= 0 ? '+' : '') + gameState.kpis.budgetBalance.toFixed(1) + '% ВВП';
+            
+            document.getElementById('reserves-status').textContent = 
+                gameState.reserves.toFixed(0) + ' млрд $';
+            
+            document.getElementById('trust-status').textContent = 
+                gameState.kpis.publicTrust.toFixed(0) + '/100';
+        }
+
+        function updatePoliciesDisplay() {
+            document.getElementById('rate-value').textContent = gameState.policies.rate.toFixed(1) + '%';
+            document.getElementById('money-supply-value').textContent = gameState.policies.moneySupply + '%';
+            document.getElementById('spending-value').textContent = gameState.policies.spending + '%';
+            document.getElementById('tax-rate-value').textContent = gameState.policies.taxRate + '%';
+            document.getElementById('fund-usage-value').textContent = gameState.policies.fundUsage + '%';
+            document.getElementById('fpi-openness-value').textContent = gameState.policies.fpiOpenness + '%';
+            document.getElementById('healthcare-value').textContent = gameState.policies.healthcare.toFixed(1) + '%';
+            document.getElementById('education-value').textContent = gameState.policies.education.toFixed(1) + '%';
+            document.getElementById('social-benefits-value').textContent = gameState.policies.socialBenefits.toFixed(1) + '%';
+
+            // Update button states
+            document.getElementById('btn-industry').classList.toggle('active', gameState.policies.industry);
+            document.getElementById('btn-sme').classList.toggle('active', gameState.policies.sme);
+            document.getElementById('btn-agro').classList.toggle('active', gameState.policies.agro);
+            document.getElementById('btn-tech').classList.toggle('active', gameState.policies.tech);
+            document.getElementById('btn-tourism').classList.toggle('active', gameState.policies.tourism);
+        }
+
+        // Event Handlers
+        function setupEventListeners() {
+            // Sliders
+            document.getElementById('rate').addEventListener('input', (e) => {
+                gameState.policies.rate = validateInput(e.target, 5, 20);
+                updateUI();
+            });
+
+            document.getElementById('money-supply').addEventListener('input', (e) => {
+                gameState.policies.moneySupply = validateInput(e.target, 80, 120);
+                updateUI();
+            });
+
+            document.getElementById('spending').addEventListener('input', (e) => {
+                gameState.policies.spending = validateInput(e.target, 15, 35);
+                updateUI();
+            });
+
+            document.getElementById('tax-rate').addEventListener('input', (e) => {
+                gameState.policies.taxRate = validateInput(e.target, 10, 30);
+                updateUI();
+            });
+
+            document.getElementById('fund-usage').addEventListener('input', (e) => {
+                gameState.policies.fundUsage = validateInput(e.target, 0, 50);
+                updateUI();
+            });
+
+            document.getElementById('fpi-openness').addEventListener('input', (e) => {
+                gameState.policies.fpiOpenness = validateInput(e.target, 0, 100);
+                updateUI();
+            });
+
+            document.getElementById('healthcare').addEventListener('input', (e) => {
+                gameState.policies.healthcare = validateInput(e.target, 2, 6);
+                updateUI();
+            });
+
+            document.getElementById('education').addEventListener('input', (e) => {
+                gameState.policies.education = validateInput(e.target, 3, 8);
+                updateUI();
+            });
+
+            document.getElementById('social-benefits').addEventListener('input', (e) => {
+                gameState.policies.socialBenefits = validateInput(e.target, 1, 5);
+                updateUI();
+            });
+
+            // Selects
+            document.getElementById('exchange-regime').addEventListener('change', (e) => {
+                gameState.policies.exchangeRegime = e.target.value;
+                updateUI();
+            });
+
+            document.getElementById('trade-agreement').addEventListener('change', (e) => {
+                gameState.policies.tradeAgreement = e.target.value;
+                updateUI();
+            });
+
+            // Structural policy buttons
+            document.getElementById('btn-industry').addEventListener('click', () => {
+                gameState.policies.industry = !gameState.policies.industry;
+                updateUI();
+            });
+
+            document.getElementById('btn-sme').addEventListener('click', () => {
+                gameState.policies.sme = !gameState.policies.sme;
+                updateUI();
+            });
+
+            document.getElementById('btn-agro').addEventListener('click', () => {
+                gameState.policies.agro = !gameState.policies.agro;
+                updateUI();
+            });
+
+            document.getElementById('btn-tech').addEventListener('click', () => {
+                gameState.policies.tech = !gameState.policies.tech;
+                updateUI();
+            });
+
+            document.getElementById('btn-tourism').addEventListener('click', () => {
+                gameState.policies.tourism = !gameState.policies.tourism;
+                updateUI();
+            });
+
+            // Next quarter
+            document.getElementById('next-quarter').addEventListener('click', nextQuarter);
+
+            // Restart
+            document.getElementById('restart-btn').addEventListener('click', restartGame);
+        }
+
+        // Simulation Engine
+        function nextQuarter() {
+            // Advance time
+            gameState.quarterCount++;
+            gameState.currentQuarter.quarter++;
+            if (gameState.currentQuarter.quarter > 4) {
+                gameState.currentQuarter.quarter = 1;
+                gameState.currentQuarter.year++;
+            }
+
+            // Simulate quarter effects
+            simulateQuarter();
+
+            // Record history
+            Object.keys(gameState.kpis).forEach(key => {
+                gameState.kpiHistory[key].push(gameState.kpis[key]);
+            });
+
+            // Update UI
+            updateUI();
+            updateDebugPanel();
+
+            // Check if game over
+            if (gameState.quarterCount >= gameState.maxQuarters) {
+                endGame();
+            }
+        }
+
+        function simulateQuarter() {
+            const prev = {...gameState.kpis};
+
+            // Ensure GDP doesn't go too extreme
+            const gdpMin = 50;
+            const gdpMax = 500;
+
+            // Monetary policy effects
+            const rateEffect = (gameState.policies.rate - 10) / 10;
+            
+            // Inflation control via rate (higher rate = lower inflation)
+            const rateInflationEffect = rateEffect * -2;
+            gameState.kpis.inflation = Math.max(0.5, Math.min(15, 
+                gameState.kpis.inflation + rateInflationEffect + (Math.random() - 0.5) * 0.8
+            ));
+
+            // GDP growth response to rate changes
+            const rateGdpEffect = rateEffect * -1.5;
+            const spendingEffect = (gameState.policies.spending - 25) / 10;
+            let gdpGrowthBase = 3 + rateGdpEffect + spendingEffect * 1.2 + (Math.random() - 0.5) * 1;
+            gameState.kpis.gdpGrowth = Math.max(-5, Math.min(10, gdpGrowthBase));
+
+            // Exchange rate effects
+            const inflDiff = gameState.kpis.inflation - 5;
+            if (gameState.policies.exchangeRegime === 'fixed') {
+                gameState.kpis.exchangeRate += (Math.random() - 0.5) * 2; // Stable
+            } else if (gameState.policies.exchangeRegime === 'managed') {
+                gameState.kpis.exchangeRate += inflDiff * 3 + (Math.random() - 0.5) * 5; // Moderate
+            } else {
+                gameState.kpis.exchangeRate += inflDiff * 4 + (Math.random() - 0.5) * 15; // Volatile
+            }
+
+            // Ensure exchange rate in reasonable bounds
+            gameState.kpis.exchangeRate = Math.max(250, Math.min(500, gameState.kpis.exchangeRate));
+
+            // Budget balance calculation
+            const revenueEffect = gameState.policies.taxRate / 100;
+            const spendingPressure = gameState.policies.spending;
+            gameState.kpis.budgetBalance = 2 + revenueEffect - spendingPressure * 0.15 + gameState.kpis.gdpGrowth * 0.2;
+
+            // Structural policy effects (long-term benefits)
+            if (gameState.policies.industry) {
+                gameState.kpis.oilDependency = Math.max(10, gameState.kpis.oilDependency - 0.5);
+                gameState.kpis.gdpGrowth += 0.3;
+                gameState.kpis.foreignInvestment += 0.2;
+            }
+
+            if (gameState.policies.sme) {
+                gameState.kpis.unemployment = Math.max(2, gameState.kpis.unemployment - 0.3);
+                gameState.kpis.publicTrust = Math.min(95, gameState.kpis.publicTrust + 1.5);
+                gameState.kpis.gdpGrowth += 0.2;
+            }
+
+            if (gameState.policies.agro) {
+                gameState.kpis.inflation = Math.max(1, gameState.kpis.inflation - 0.3);
+                gameState.kpis.unemployment = Math.max(2, gameState.kpis.unemployment - 0.1);
+                gameState.kpis.gdpGrowth += 0.15;
+            }
+
+            if (gameState.policies.tech) {
+                // Delayed effect - more impactful in later quarters
+                const techBonus = gameState.quarterCount > 15 ? 0.6 : 0.2;
+                gameState.kpis.gdpGrowth += techBonus;
+                gameState.kpis.foreignInvestment += 0.3;
+                if (gameState.quarterCount > 20) {
+                    gameState.kpis.oilDependency = Math.max(8, gameState.kpis.oilDependency - 0.3);
+                }
+            }
+
+            if (gameState.policies.tourism) {
+                gameState.kpis.foreignInvestment += 0.25;
+                gameState.kpis.gdpGrowth += 0.15;
+                gameState.kpis.publicTrust += 0.5;
+            }
+
+            // Social policy effects on trust
+            const socialBenefitsEffect = gameState.policies.socialBenefits;
+            const healthQualityEffect = gameState.policies.healthcare / 10;
+            const educationEffect = gameState.policies.education / 20;
+            
+            gameState.kpis.publicTrust = Math.min(100, gameState.kpis.publicTrust + 
+                socialBenefitsEffect * 1.5 + healthQualityEffect * 2 - Math.max(0, gameState.kpis.unemployment - 5) * 2
+            );
+
+            // Phillips Curve - relationship between unemployment and inflation
+            const unemploymentEffect = (5 - gameState.kpis.unemployment) * 0.4;
+            gameState.kpis.inflation += unemploymentEffect;
+
+            // FPI effects
+            const fpiOpenness = gameState.policies.fpiOpenness;
+            gameState.kpis.foreignInvestment = Math.max(1, gameState.kpis.foreignInvestment + 
+                (fpiOpenness / 100) * 0.5 - (gameState.kpis.inflation - 5) * 0.2
+            );
+
+            // External shocks
+            if (Math.random() < 0.12) {
+                applyRandomShock();
+            }
+
+            // Reserve/Fund management
+            const fundUsageAmount = gameState.nationalFund * (gameState.policies.fundUsage / 100);
+            gameState.nationalFund -= fundUsageAmount;
+            
+            // Add positive budget contribution to reserves
+            if (gameState.kpis.budgetBalance > 0) {
+                gameState.reserves += gameState.kpis.budgetBalance * 2;
+            } else {
+                gameState.reserves += gameState.kpis.budgetBalance * 1.5;
+            }
+
+            gameState.reserves = Math.max(10, Math.min(100, gameState.reserves));
+
+            // GDP calculation (using growth rate)
+            gameState.kpis.gdp = gameState.kpis.gdp * (1 + gameState.kpis.gdpGrowth / 400);
+            gameState.kpis.gdp = Math.max(gdpMin, Math.min(gdpMax, gameState.kpis.gdp));
+
+            // Dynamic unemployment based on growth
+            gameState.kpis.unemployment = Math.max(1, Math.min(15, 
+                gameState.kpis.unemployment - gameState.kpis.gdpGrowth * 0.15 + (Math.random() - 0.5) * 0.5
+            ));
+
+            // Final bounds to keep values reasonable
+            gameState.kpis.inflation = Math.max(0.5, Math.min(20, gameState.kpis.inflation));
+            gameState.kpis.oilDependency = Math.max(8, Math.min(60, gameState.kpis.oilDependency));
+            gameState.kpis.publicTrust = Math.max(10, Math.min(100, gameState.kpis.publicTrust));
+
+            // Add events based on significant changes
+            if (Math.abs(gameState.kpis.inflation - prev.inflation) > 1.5) {
+                const dir = gameState.kpis.inflation > prev.inflation ? 'выросла' : 'упала';
+                const type = gameState.kpis.inflation > 7 ? 'negative' : gameState.kpis.inflation < 2 ? 'negative' : 'positive';
+                addEvent(`Инфляция ${dir} до ${gameState.kpis.inflation.toFixed(1)}%`, type);
+            }
+
+            if (Math.abs(gameState.kpis.gdpGrowth - prev.gdpGrowth) > 1.2) {
+                const dir = gameState.kpis.gdpGrowth > prev.gdpGrowth ? 'ускорилось' : 'замедлилось';
+                const type = gameState.kpis.gdpGrowth > 4 ? 'positive' : gameState.kpis.gdpGrowth < 2 ? 'negative' : 'neutral';
+                addEvent(`Экономический рост ${dir} до ${gameState.kpis.gdpGrowth.toFixed(1)}%`, type);
+            }
+
+            if (Math.abs(gameState.kpis.unemployment - prev.unemployment) > 0.8) {
+                const dir = gameState.kpis.unemployment > prev.unemployment ? 'выросла' : 'снизилась';
+                const type = gameState.kpis.unemployment > 6 ? 'negative' : 'positive';
+                addEvent(`Безработица ${dir} до ${gameState.kpis.unemployment.toFixed(1)}%`, type);
+            }
+
+            // Log to console for debugging
+            console.log(`Q${gameState.currentQuarter.quarter} ${gameState.currentQuarter.year}:`, {
+                gdpGrowth: gameState.kpis.gdpGrowth.toFixed(2),
+                inflation: gameState.kpis.inflation.toFixed(2),
+                unemployment: gameState.kpis.unemployment.toFixed(2),
+                exchangeRate: gameState.kpis.exchangeRate.toFixed(0),
+                budgetBalance: gameState.kpis.budgetBalance.toFixed(2),
+                oilDependency: gameState.kpis.oilDependency.toFixed(1),
+                publicTrust: gameState.kpis.publicTrust.toFixed(0)
+            });
+        }
+
+        function applyRandomShock() {
+            const shocks = [
+                {
+                    text: 'Цены на нефть упали на 25%',
+                    effect: () => {
+                        gameState.kpis.gdpGrowth -= 1.5;
+                        gameState.kpis.budgetBalance -= 2;
+                        gameState.reserves -= 5;
+                    }
+                },
+                {
+                    text: 'Мировая рецессия: спрос на экспорт упал',
+                    effect: () => {
+                        gameState.kpis.gdpGrowth -= 1;
+                        gameState.kpis.foreignInvestment -= 1;
+                    }
+                },
+                {
+                    text: 'Засуха в сельской местности',
+                    effect: () => {
+                        gameState.kpis.inflation += 1.5;
+                        gameState.kpis.gdpGrowth -= 0.5;
+                    }
+                },
+                {
+                    text: 'Инвесторы повысили рейтинг страны',
+                    effect: () => {
+                        gameState.kpis.foreignInvestment += 2;
+                        gameState.kpis.publicTrust += 5;
+                    }
+                },
+                {
+                    text: 'Девальвация тенге ускорилась',
+                    effect: () => {
+                        gameState.kpis.exchangeRate += 40;
+                        gameState.kpis.inflation += 1;
+                    }
+                }
+            ];
+
+            const shock = shocks[Math.floor(Math.random() * shocks.length)];
+            shock.effect();
+            addEvent(shock.text, shock.text.includes('упал') || shock.text.includes('упала') || shock.text.includes('Девальв') || shock.text.includes('Засуха') ? 'negative' : 'positive');
+        }
+
+        function endGame() {
+            // Calculate final grade
+            const scores = calculateFinalScores();
+            const avgScore = Object.values(scores).reduce((a, b) => a + b) / Object.values(scores).length;
+            
+            let grade = 'F';
+            if (avgScore >= 90) grade = 'A+';
+            else if (avgScore >= 85) grade = 'A';
+            else if (avgScore >= 80) grade = 'B+';
+            else if (avgScore >= 75) grade = 'B';
+            else if (avgScore >= 70) grade = 'C+';
+            else if (avgScore >= 60) grade = 'C';
+            else if (avgScore >= 50) grade = 'D';
+
+            // Display final screen
+            document.getElementById('final-grade').textContent = grade;
+
+            const kpiList = document.getElementById('final-kpi-list');
+            kpiList.innerHTML = '';
+
+            const kpiConfigs = [
+                { key: 'gdpGrowth', label: 'Рост ВВП', unit: '%' },
+                { key: 'inflation', label: 'Инфляция', unit: '%' },
+                { key: 'unemployment', label: 'Безработица', unit: '%' },
+                { key: 'budgetBalance', label: 'Бюджет', unit: '% ВВП' },
+                { key: 'oilDependency', label: 'Нефт. зав.', unit: '%' },
+                { key: 'publicTrust', label: 'Доверие', unit: '/100' },
+                { key: 'exchangeRate', label: 'Курс тенге', unit: '₸/$' },
+                { key: 'foreignInvestment', label: 'ИПИ', unit: 'млрд $' }
+            ];
+
+            kpiConfigs.forEach(config => {
+                const score = scores[config.key];
+                let statusClass = score >= 70 ? 'green' : score >= 50 ? 'yellow' : 'red';
+                
+                const item = document.createElement('div');
+                item.className = `final-kpi-item ${statusClass}`;
+                item.innerHTML = `
+                    <div class="final-kpi-name">${config.label}</div>
+                    <div class="final-kpi-values">
+                        <span>${gameState.kpis[config.key].toFixed(1)}${config.unit}</span>
+                        <span style="color: #ffd93d;">Score: ${score.toFixed(0)}</span>
+                    </div>
+                `;
+                kpiList.appendChild(item);
+            });
+
+            // Generate narrative
+            const narrative = generateFinalNarrative();
+            document.getElementById('final-narrative').textContent = narrative;
+
+            document.getElementById('final-modal').classList.add('active');
+        }
+
+        function calculateFinalScores() {
+            // Score each KPI based on targets
+            return {
+                gdpGrowth: Math.min(100, Math.max(0, gameState.kpis.gdpGrowth * 15)),
+                inflation: Math.min(100, Math.max(0, 100 - Math.abs(gameState.kpis.inflation - 5) * 5)),
+                unemployment: Math.min(100, Math.max(0, (10 - gameState.kpis.unemployment) * 10)),
+                budgetBalance: Math.min(100, gameState.kpis.budgetBalance + 100) / 2,
+                oilDependency: Math.min(100, 100 - gameState.kpis.oilDependency * 2),
+                publicTrust: gameState.kpis.publicTrust,
+                exchangeRate: Math.min(100, Math.max(0, 100 - Math.abs(gameState.kpis.exchangeRate - 380) / 5)),
+                foreignInvestment: Math.min(100, gameState.kpis.foreignInvestment * 10)
+            };
+        }
+
+        function generateFinalNarrative() {
+            const narratives = [];
+
+            if (gameState.kpis.oilDependency < 20) {
+                narratives.push("Successfully diversified the economy — oil dependency significantly reduced.");
+            } else if (gameState.kpis.oilDependency > 40) {
+                narratives.push("The economy remains vulnerable to oil price fluctuations.");
+            }
+
+            if (gameState.kpis.inflation < 4) {
+                narratives.push("Achieved stable price levels with minimal inflation.");
+            } else if (gameState.kpis.inflation > 7) {
+                narratives.push("High inflation remains, eroding purchasing power.");
+            }
+
+            if (gameState.kpis.unemployment < 4) {
+                narratives.push("Strong labor market with low unemployment rates.");
+            } else if (gameState.kpis.unemployment > 6) {
+                narratives.push("High unemployment created social tensions.");
+            }
+
+            if (gameState.kpis.publicTrust > 70) {
+                narratives.push("Public confidence in government remains solid — a strong foundation for future reforms.");
+            } else if (gameState.kpis.publicTrust < 40) {
+                narratives.push("Public trust eroded — political instability threatens reforms.");
+            }
+
+            if (gameState.kpis.budgetBalance > 0) {
+                narratives.push("Budget surplus enabled reserve accumulation and debt reduction.");
+            } else if (gameState.kpis.budgetBalance < -3) {
+                narratives.push("Chronic budget deficits require urgent structural reforms.");
+            }
+
+            return narratives.length > 0 ? narratives.join(" ") : "Kazakhstan completed the period with mixed economic results.";
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+
+        // TUTORIAL SYSTEM
+        const tutorials = [
+            {
+                title: 'Welcome to EconoSim KZ!',
+                content: `
+                    <div class="tutorial-section">
+                        <p>This is a browser-based economic simulation of Kazakhstan. You take the role of an economic advisor and manage the nation's economy over 10 years (40 quarters).</p>
+                        <div class="tutorial-highlight">
+                            <strong>Your Goal:</strong> Bring key economic indicators to target values without triggering a crisis.
+                        </div>
+                        <p><strong>Timeline:</strong> Each step = 1 quarter (3 months). From Q1 2015 to Q4 2024.</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Main Screen Overview',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Left Panel - Control Console</h3>
+                        <p>Here are all the levers to influence the economy:</p>
+                        <ul>
+                            <li><strong>Monetary Policy</strong> - interest rates, exchange regime, money supply</li>
+                            <li><strong>Fiscal Policy</strong> - spending, taxes, National Fund</li>
+                            <li><strong>Structural Policy</strong> - development programs (toggle buttons)</li>
+                            <li><strong>External Economic Policy</strong> - trade agreements, investment openness</li>
+                            <li><strong>Social Policy</strong> - healthcare, education, social benefits</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                title: 'Dashboard Center & Right',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Center - Dashboard</h3>
+                        <ul>
+                            <li><strong>Regional Map</strong> - click for regional details</li>
+                            <li><strong>KPI Panel</strong> - 8 key indicators with color status</li>
+                            <li><strong>Trend Charts</strong> - recent quarter dynamics</li>
+                        </ul>
+                        <h3>Right - Event Feed</h3>
+                        <p>Displays quarterly events: indicator changes, external shocks, policy effects.</p>
+                    </div>
+                `
+            },
+            {
+                title: '8 Key Performance Indicators (KPIs)',
+                content: `
+                    <div class="tutorial-section">
+                        <ul>
+                            <li><strong>GDP Growth</strong> - target 4-6% annually (green). Below 2% = red</li>
+                            <li><strong>Inflation</strong> - target 4-6% (green). Above 10% or below 1% = red</li>
+                            <li><strong>Unemployment</strong> - target below 5% (green). Above 9% = critical</li>
+                            <li><strong>Tenge Exchange Rate</strong> - optimal 380-400 ₸/$ (green)</li>
+                            <li><strong>Budget</strong> - aim for surplus or small deficit (green)</li>
+                            <li><strong>Oil Dependency</strong> - lower = better (green &lt;30%)</li>
+                            <li><strong>Public Trust</strong> - 0-100 scale. Critical if &lt;30</li>
+                            <li><strong>Foreign Investment</strong> - more = better (green &gt;7B $)</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                title: 'How to Make Decisions',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Sliders & Dropdowns</h3>
+                        <p>Adjust sliders for interest rates, spending, and taxes. Select options from dropdowns.</p>
+                        <h3>Program Buttons</h3>
+                        <p>Click structural policy buttons (Industrialization, SME, Agriculture, etc.) to activate long-term programs.</p>
+                        <h3>Constraint</h3>
+                        <p>Make 3-4 major changes per quarter — reflects real policy constraints. You can adjust values anytime!</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Decision Consequences Example',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Tool: Raising the Base Rate</h3>
+                        <ul>
+                            <li>✓ Inflation decreases</li>
+                            <li>✓ Tenge strengthens (attracts investment)</li>
+                            <li>✗ GDP falls (less business credit)</li>
+                            <li>✗ Unemployment rises (cost-cutting)</li>
+                        </ul>
+                        <p><strong>Lesson:</strong> Every decision has tradeoffs. Find balance!</p>
+                    </div>
+                `
+            },
+            {
+                title: 'External Shocks & Risks',
+                content: `
+                    <div class="tutorial-section">
+                        <p>Every few quarters a random event occurs:</p>
+                        <ul>
+                            <li><strong>Oil Price Crash</strong> - hits GDP and budget</li>
+                            <li><strong>Global Recession</strong> - demand falls, investment leaves</li>
+                            <li><strong>Drought</strong> - inflation rises, GDP falls</li>
+                            <li><strong>Positive Events</strong> - rating upgrade, investment surge</li>
+                        </ul>
+                        <p>You cannot prevent them, but you can respond with good timing!</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Final Screen & Scoring',
+                content: `
+                    <div class="tutorial-section">
+                        <p>After 40 quarters you receive:</p>
+                        <ul>
+                            <li><strong>Overall Grade</strong> - F through A+ based on all KPIs</li>
+                            <li><strong>Detailed Results</strong> - each KPI with scores</li>
+                            <li><strong>Narrative</strong> - analysis of your performance</li>
+                        </ul>
+                        <p>Compare your results to real Kazakhstan 2015-2024 history!</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Strategy Tips',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Long-Term Programs</h3>
+                        <p>Enable Tech Hub, Industrialization, and education early — they deliver results in 10-20 quarters.</p>
+                        <h3>Diversification</h3>
+                        <p>Kazakhstan depends heavily on oil (35% GDP). Reduce this through industrialization and new sectors.</p>
+                        <h3>Inflation Control</h3>
+                        <p>High inflation (&gt;7%) destroys trust. Use interest rates!</p>
+                        <h3>Budget Balance</h3>
+                        <p>Avoid massive deficits — they increase debt and hurt credit ratings.</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Ready to Lead?',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>You're Prepared!</h3>
+                        <p>Now close this tutorial and start managing Kazakhstan's economy!</p>
+                        <div class="tutorial-highlight">
+                            <strong>Remember:</strong> Every decision has delayed effects. Think long-term, don't panic-change everything.
+                        </div>
+                        <p style="margin-top: 15px;">Click "?" in the lower right corner anytime to return to this guide.</p>
+                    </div>
+                `
+            }
+        ];
+
+        let currentTutorialPage = 0;
+
+        function setupTutorial() {
+            const helpBtn = document.getElementById('help-btn');
+            const modal = document.getElementById('tutorial-modal');
+
+            if (!helpBtn) return;
+
+            helpBtn.addEventListener('click', showTutorial);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeTutorial();
+            });
+        }
+
+        function showTutorial() {
+            currentTutorialPage = 0;
+            displayTutorialPage();
+            document.getElementById('tutorial-modal').classList.add('active');
+        }
+
+        function closeTutorial() {
+            document.getElementById('tutorial-modal').classList.remove('active');
+        }
+
+        function displayTutorialPage() {
+            const content = document.getElementById('tutorial-content');
+            const page = tutorials[currentTutorialPage];
+
+            let html = `
+                <h2>${page.title}</h2>
+                ${page.content}
+            `;
+
+            if (currentTutorialPage < tutorials.length - 1) {
+                html += `
+                    <div class="tutorial-buttons">
+                        <button class="tutorial-btn close" onclick="closeTutorial()">Close</button>
+                        <button class="tutorial-btn next" onclick="nextTutorialPage()">Next →</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="tutorial-buttons">
+                        <button class="tutorial-btn next" onclick="closeTutorial(); startGame()">Start Game!</button>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="tutorial-indicator">Page ${currentTutorialPage + 1} / ${tutorials.length}</div>
+            `;
+
+            content.innerHTML = html;
+        }
+
+        function nextTutorialPage() {
+            if (currentTutorialPage < tutorials.length - 1) {
+                currentTutorialPage++;
+                displayTutorialPage();
+            }
+        }
+
+        function startGame() {
+            // Game is already started, just close tutorial
+        }
+
+        // DEBUG SYSTEM
+        function setupDebug() {
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'd') {
+                    e.preventDefault();
+                    const panel = document.getElementById('debug-panel');
+                    panel.classList.toggle('active');
+                    updateDebugPanel();
+                }
+            });
+        }
+
+        function updateDebugPanel() {
+            const panel = document.getElementById('debug-panel');
+            if (!panel.classList.contains('active')) return;
+
+            const debugInfo = {
+                'Quarter': `Q${gameState.currentQuarter.quarter} ${gameState.currentQuarter.year}`,
+                'Number': gameState.quarterCount + ' of ' + gameState.maxQuarters,
+                'GDP': gameState.kpis.gdp.toFixed(1),
+                'Growth': gameState.kpis.gdpGrowth.toFixed(2) + '%',
+                'Inflation': gameState.kpis.inflation.toFixed(2) + '%',
+                'Unemployment': gameState.kpis.unemployment.toFixed(2) + '%',
+                'Tenge': gameState.kpis.exchangeRate.toFixed(0),
+                'Budget': gameState.kpis.budgetBalance.toFixed(2) + '%',
+                'Oil Dep.': gameState.kpis.oilDependency.toFixed(0) + '%',
+                'Trust': gameState.kpis.publicTrust.toFixed(0) + '/100',
+                'Reserves': gameState.reserves.toFixed(0) + 'B$',
+                'Events': gameState.events.length,
+                'Rate': gameState.policies.rate.toFixed(1) + '%'
+            };
+
+            panel.innerHTML = '<strong>DEBUG (Ctrl+D)</strong>' +
+                Object.entries(debugInfo).map(([k, v]) => `<div><span>${k}:</span> ${v}</div>`).join('');
+        }
+
+        // Draw map - improved version
+        function drawMap() {
+            const canvas = document.getElementById('map-canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+
+            // Background
+            ctx.fillStyle = '#0d0d0d';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Map regions data (normalized 0-100 coordinates)
+            const regionsData = [
+                { name: 'Atyrau', x: 15, y: 35, w: 12, h: 15, specialization: 'Oil & Gas' },
+                { name: 'Mangystau', x: 8, y: 60, w: 10, h: 14, specialization: 'Oil' },
+                { name: 'West KZ', x: 20, y: 50, w: 15, h: 20, specialization: 'Mixed' },
+                { name: 'Aktobe', x: 28, y: 25, w: 12, h: 15, specialization: 'Oil & Agro' },
+                { name: 'Turkestan', x: 35, y: 65, w: 10, h: 12, specialization: 'Agro' },
+                { name: 'Zhambyl', x: 42, y: 50, w: 8, h: 12, specialization: 'Agro' },
+                { name: 'South KZ', x: 48, y: 60, w: 14, h: 16, specialization: 'Mixed' },
+                { name: 'Karaganda', x: 38, y: 38, w: 12, h: 14, specialization: 'Metal & Coal' },
+                { name: 'Kostanay', x: 30, y: 15, w: 12, h: 12, specialization: 'Agro' },
+                { name: 'North KZ', x: 25, y: 10, w: 8, h: 10, specialization: 'Mixed' },
+                { name: 'Pavlodar', x: 48, y: 28, w: 10, h: 12, specialization: 'Coal & Energy' },
+                { name: 'Akmola', x: 42, y: 20, w: 10, h: 12, specialization: 'Agro & Industry' },
+                { name: 'East KZ', x: 62, y: 30, w: 15, h: 20, specialization: 'Metals' },
+                { name: 'Almaty City', x: 52, y: 72, w: 6, h: 6, specialization: 'Finance & Trade' },
+                { name: 'Nur-Sultan', x: 45, y: 32, w: 5, h: 5, specialization: 'Capital' }
+            ];
+
+            const scale = Math.min(canvas.width / 80, canvas.height / 80);
+            const offsetX = (canvas.width - 80 * scale) / 2;
+            const offsetY = (canvas.height - 80 * scale) / 2;
+
+            // Draw each region
+            regionsData.forEach(region => {
+                const x = offsetX + region.x * scale;
+                const y = offsetY + region.y * scale;
+                const w = region.w * scale;
+                const h = region.h * scale;
+
+                // Color based on economic health
+                const healthIndicator = gameState.kpis.publicTrust / 100;
+                let color;
+                if (healthIndicator > 0.7) {
+                    color = '#51cf66';  // Green
+                } else if (healthIndicator > 0.5) {
+                    color = '#ffd93d';  // Yellow
+                } else if (healthIndicator > 0.3) {
+                    color = '#ff9800';  // Orange
+                } else {
+                    color = '#ff6b6b';  // Red
+                }
+
+                // Draw rectangle
+                ctx.fillStyle = color;
+                ctx.globalAlpha = 0.7;
+                ctx.fillRect(x, y, w, h);
+                ctx.globalAlpha = 1;
+
+                // Draw border
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x, y, w, h);
+
+                // Draw label
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 9px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(region.name, x + w / 2, y + h / 2 - 5);
+
+                // Make region clickable
+                canvas.regionBounds = canvas.regionBounds || [];
+                canvas.regionBounds.push({ x, y, w, h, region });
+            });
+
+            // Draw title
+            ctx.fillStyle = '#64b5f6';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Kazakhstan Regions', canvas.width / 2, 20);
+
+            ctx.fillStyle = '#aaa';
+            ctx.font = '10px Arial';
+            ctx.fillText('(color shows economic status)', canvas.width / 2, 35);
+        }
+
+        // Handle map canvas clicks
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('map-canvas');
+            if (!canvas) return;
+
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+
+                if (canvas.regionBounds) {
+                    canvas.regionBounds.forEach(bounds => {
+                        if (clickX >= bounds.x && clickX <= bounds.x + bounds.w &&
+                            clickY >= bounds.y && clickY <= bounds.y + bounds.h) {
+                            alert(`${bounds.region.name}\n\nSpecialization: ${bounds.region.specialization}\n\nEconomic Status: ${gameState.kpis.publicTrust > 70 ? 'Strong' : gameState.kpis.publicTrust > 50 ? 'Moderate' : 'Stressed'}`);
+                        }
+                    });
+                }
+            });
+        });
+        function init() {
+            setupEventListeners();
+            setupTutorial();
+            setupDebug();
+            updateUI();
+            drawMap();
+
+            // Redraw map on resize
+            window.addEventListener('resize', drawMap);
+
+            addEvent('Start of simulation. Kazakhstan, Q1 2015.', 'positive');
+            
+            // Show tutorial on first visit
+            if (!localStorage.getItem('econosim-visited')) {
+                setTimeout(() => showTutorial(), 500);
+                localStorage.setItem('econosim-visited', 'true');
+            }
+
+            console.log('=== EconoSim KZ Initialized ===');
+            console.log('Version: 1.0 (English)');
+            console.log('Max quarters: ' + gameState.maxQuarters);
+            console.log('Press Ctrl+D to toggle debug panel');
+        }
+
+        // Start game
+        init();
+    </script>
+    </div>
+
+    <script>
+        // ===== GLOBAL TOGGLE FUNCTIONS =====
+        function switchToGame() {
+            document.getElementById('marketingView').style.display = 'none';
+            document.getElementById('gameView').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function switchToMarketing() {
+            document.getElementById('marketingView').style.display = 'block';
+            document.getElementById('gameView').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            window.scrollTo(0, 0);
+        }
+
+        // ===== MARKETING SCRIPTS =====
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Mystery card removal function
+        function removeMysteryCard() {
+            const mysteryCard = document.getElementById('mysteryCard');
+            mysteryCard.classList.add('hidden');
+            setTimeout(() => {
+                mysteryCard.style.display = 'none';
+            }, 300);
+        }
+
+        // Game mode switcher
+        );
+        }
+
+        );
+            
+            window.scrollTo(0, 0);
+        }
+    
+
+        // ===== GAME SCRIPTS =====
+        // GAME STATE
+        const gameState = {
+            currentQuarter: { year: 2015, quarter: 1 },
+            quarterCount: 0,
+            maxQuarters: 40,
+            
+            // KPI Values
+            kpis: {
+                gdp: 170,           // billion USD
+                gdpGrowth: 3.2,     // %
+                inflation: 5.2,     // %
+                unemployment: 4.8,  // %
+                exchangeRate: 380,  // ₸ per $
+                budgetBalance: 0.5, // % of GDP
+                oilDependency: 35,  // % of GDP
+                publicTrust: 65,    // 0-100
+                foreignInvestment: 8 // billion USD
+            },
+
+            // Historical KPI data
+            kpiHistory: {
+                gdp: [170],
+                gdpGrowth: [3.2],
+                inflation: [5.2],
+                unemployment: [4.8],
+                exchangeRate: [380],
+                budgetBalance: [0.5],
+                oilDependency: [35],
+                publicTrust: [65],
+                foreignInvestment: [8]
+            },
+
+            // Policies
+            policies: {
+                rate: 10,
+                exchangeRegime: 'managed',
+                moneySupply: 100,
+                spending: 25,
+                taxRate: 20,
+                fundUsage: 10,
+                industry: false,
+                sme: false,
+                agro: false,
+                tech: false,
+                tourism: false,
+                tradeAgreement: 'eaeu',
+                fpiOpenness: 50,
+                healthcare: 3.5,
+                education: 5,
+                socialBenefits: 2
+            },
+
+            // Resources
+            reserves: 45,           // billion USD
+            nationalFund: 150,      // billion USD
+            debt: 20,               // billion USD
+
+            // Events log
+            events: []
+        };
+
+        // Utility functions
+        function getQuarterString(year, quarter) {
+            return `Q${quarter} ${year}`;
+        }
+
+        function validateInput(element, min, max) {
+            const value = parseFloat(element.value);
+            if (isNaN(value)) element.value = min;
+            if (value < min) element.value = min;
+            if (value > max) element.value = max;
+            return parseFloat(element.value);
+        }
+
+        function addEvent(text, type = 'neutral') {
+            gameState.events.unshift({
+                text: text,
+                type: type,
+                quarter: gameState.quarterCount
+            });
+
+            const eventItem = document.createElement('div');
+            eventItem.className = `event-item ${type === 'negative' ? 'negative' : type === 'positive' ? 'positive' : ''}`;
+            eventItem.innerHTML = `
+                <div>${text}</div>
+                <div class="event-time">${getQuarterString(gameState.currentQuarter.year, gameState.currentQuarter.quarter)}</div>
+            `;
+            document.getElementById('events-log').appendChild(eventItem);
+
+            // Keep only last 20 events visible
+            const events = document.querySelectorAll('.event-item');
+            if (events.length > 20) {
+                events[events.length - 1].remove();
+            }
+        }
+
+        // Update UI
+        function updateUI() {
+            // Update quarter display
+            document.getElementById('quarter-display').textContent = 
+                getQuarterString(gameState.currentQuarter.year, gameState.currentQuarter.quarter);
+
+            // Update header KPIs
+            updateHeaderKPIs();
+            updateKPIPanel();
+            updateGraphs();
+            updateSummaryStats();
+            updatePoliciesDisplay();
+        }
+
+        function updateHeaderKPIs() {
+            document.getElementById('header-gdp').textContent = gameState.kpis.gdp.toFixed(1) + ' трлн ₸';
+            document.getElementById('header-inflation').textContent = gameState.kpis.inflation.toFixed(1) + '%';
+            document.getElementById('header-unemployment').textContent = gameState.kpis.unemployment.toFixed(1) + '%';
+            document.getElementById('header-exchange').textContent = gameState.kpis.exchangeRate.toFixed(0) + ' ₸/$';
+        }
+
+        function updateKPIPanel() {
+            const panel = document.getElementById('kpi-list');
+            panel.innerHTML = '';
+
+            const kpiConfigs = [
+                { key: 'gdpGrowth', label: 'Рост ВВП', unit: '%', thresholds: { red: [-10, 2], yellow: [2, 4], green: [4, 100] } },
+                { key: 'inflation', label: 'Инфляция', unit: '%', thresholds: { red: [10, 100], yellow: [4, 10], green: [1, 4] } },
+                { key: 'unemployment', label: 'Безработица', unit: '%', thresholds: { red: [9, 100], yellow: [5, 9], green: [0, 5] } },
+                { key: 'exchangeRate', label: 'Курс тенге', unit: '₸/$', thresholds: { red: [-100, 350], yellow: [350, 400], green: [400, 500] } },
+                { key: 'budgetBalance', label: 'Бюджет', unit: '% ВВП', thresholds: { red: [-100, -4], yellow: [-4, 0], green: [0, 100] } },
+                { key: 'oilDependency', label: 'Нефт. зав.', unit: '%', thresholds: { red: [50, 100], yellow: [30, 50], green: [0, 30] } },
+                { key: 'publicTrust', label: 'Доверие', unit: '/100', thresholds: { red: [0, 30], yellow: [30, 60], green: [60, 100] } },
+                { key: 'foreignInvestment', label: 'ИПИ', unit: 'млрд $', thresholds: { red: [0, 3], yellow: [3, 7], green: [7, 100] } }
+            ];
+
+            kpiConfigs.forEach(config => {
+                const value = gameState.kpis[config.key];
+                let statusClass = 'green';
+                
+                if (config.key === 'inflation' || config.key === 'unemployment' || config.key === 'oilDependency') {
+                    if (value >= config.thresholds.red[0]) statusClass = 'red';
+                    else if (value >= config.thresholds.yellow[0]) statusClass = 'yellow';
+                } else if (config.key === 'exchangeRate') {
+                    if (value <= 350 || value >= 500) statusClass = 'red';
+                    else if (value <= 360 || value >= 450) statusClass = 'yellow';
+                } else {
+                    if (value <= config.thresholds.red[1] || value >= config.thresholds.red[0]) statusClass = 'red';
+                    else if (value <= config.thresholds.yellow[1] || value >= config.thresholds.yellow[0]) statusClass = 'yellow';
+                }
+
+                const item = document.createElement('div');
+                item.className = 'kpi-item';
+                item.innerHTML = `
+                    <div class="kpi-name">${config.label}</div>
+                    <div class="kpi-row">
+                        <div class="kpi-value ${statusClass}">${value.toFixed(1)}${config.unit}</div>
+                        <div class="kpi-trend" style="width: 60px; height: 25px; background: #2c2c2c; border-radius: 2px;"></div>
+                    </div>
+                `;
+                panel.appendChild(item);
+            });
+        }
+
+        function updateGraphs() {
+            const container = document.getElementById('graphs-area');
+            container.innerHTML = '';
+
+            const graphs = [
+                { title: 'ВВП рост (%)', data: gameState.kpiHistory.gdpGrowth },
+                { title: 'Инфляция (%)', data: gameState.kpiHistory.inflation },
+                { title: 'Курс тенге (₸/$)', data: gameState.kpiHistory.exchangeRate }
+            ];
+
+            graphs.forEach(graph => {
+                const div = document.createElement('div');
+                div.className = 'graph';
+                div.innerHTML = `
+                    <div class="graph-title">${graph.title}</div>
+                    <canvas data-type="graph" data-values="${graph.data.join(',')}"></canvas>
+                `;
+                container.appendChild(div);
+                drawGraph(div.querySelector('canvas'), graph.data);
+            });
+        }
+
+        function drawGraph(canvas, data) {
+            if (!canvas || data.length === 0) return;
+
+            const ctx = canvas.getContext('2d');
+            const width = canvas.clientWidth;
+            const height = 80;
+            canvas.width = width;
+            canvas.height = height;
+
+            const padding = 15;
+            const graphWidth = width - 2 * padding;
+            const graphHeight = height - 2 * padding;
+
+            // Find min/max with reasonable bounds
+            let min = Math.min(...data);
+            let max = Math.max(...data);
+            
+            // Add 10% padding to min/max for better visualization
+            const range = Math.max(max - min, 1);
+            const padding_range = range * 0.1;
+            min = min - padding_range;
+            max = max + padding_range;
+            const finalRange = max - min || 1;
+
+            // Draw background
+            ctx.fillStyle = '#2c2c2c';
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw grid lines
+            ctx.strokeStyle = '#404040';
+            ctx.lineWidth = 0.5;
+            ctx.globalAlpha = 0.5;
+            for (let i = 0; i <= 4; i++) {
+                const y = padding + (graphHeight / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+
+            // Draw line
+            ctx.strokeStyle = '#2196f3';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            data.forEach((value, index) => {
+                const x = padding + (graphWidth / Math.max(1, data.length - 1)) * index;
+                const normalizedValue = (value - min) / finalRange;
+                const y = height - padding - normalizedValue * graphHeight;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            // Draw gradient fill
+            const gradient = ctx.createLinearGradient(0, padding, 0, height - padding);
+            gradient.addColorStop(0, 'rgba(33, 150, 243, 0.3)');
+            gradient.addColorStop(1, 'rgba(33, 150, 243, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            data.forEach((value, index) => {
+                const x = padding + (graphWidth / Math.max(1, data.length - 1)) * index;
+                const normalizedValue = (value - min) / finalRange;
+                const y = height - padding - normalizedValue * graphHeight;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.lineTo(width - padding, height - padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.closePath();
+            ctx.fill();
+
+            // Draw points
+            ctx.fillStyle = '#64b5f6';
+            data.forEach((value, index) => {
+                const x = padding + (graphWidth / Math.max(1, data.length - 1)) * index;
+                const normalizedValue = (value - min) / finalRange;
+                const y = height - padding - normalizedValue * graphHeight;
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Draw last point highlight
+            if (data.length > 0) {
+                const lastIdx = data.length - 1;
+                const x = padding + (graphWidth / Math.max(1, data.length - 1)) * lastIdx;
+                const normalizedValue = (data[lastIdx] - min) / finalRange;
+                const y = height - padding - normalizedValue * graphHeight;
+                
+                ctx.strokeStyle = '#ffd93d';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function updateSummaryStats() {
+            const budgetClass = gameState.kpis.budgetBalance >= 0 ? 'green' : 'red';
+            document.getElementById('budget-status').textContent = 
+                (gameState.kpis.budgetBalance >= 0 ? '+' : '') + gameState.kpis.budgetBalance.toFixed(1) + '% ВВП';
+            
+            document.getElementById('reserves-status').textContent = 
+                gameState.reserves.toFixed(0) + ' млрд $';
+            
+            document.getElementById('trust-status').textContent = 
+                gameState.kpis.publicTrust.toFixed(0) + '/100';
+        }
+
+        function updatePoliciesDisplay() {
+            document.getElementById('rate-value').textContent = gameState.policies.rate.toFixed(1) + '%';
+            document.getElementById('money-supply-value').textContent = gameState.policies.moneySupply + '%';
+            document.getElementById('spending-value').textContent = gameState.policies.spending + '%';
+            document.getElementById('tax-rate-value').textContent = gameState.policies.taxRate + '%';
+            document.getElementById('fund-usage-value').textContent = gameState.policies.fundUsage + '%';
+            document.getElementById('fpi-openness-value').textContent = gameState.policies.fpiOpenness + '%';
+            document.getElementById('healthcare-value').textContent = gameState.policies.healthcare.toFixed(1) + '%';
+            document.getElementById('education-value').textContent = gameState.policies.education.toFixed(1) + '%';
+            document.getElementById('social-benefits-value').textContent = gameState.policies.socialBenefits.toFixed(1) + '%';
+
+            // Update button states
+            document.getElementById('btn-industry').classList.toggle('active', gameState.policies.industry);
+            document.getElementById('btn-sme').classList.toggle('active', gameState.policies.sme);
+            document.getElementById('btn-agro').classList.toggle('active', gameState.policies.agro);
+            document.getElementById('btn-tech').classList.toggle('active', gameState.policies.tech);
+            document.getElementById('btn-tourism').classList.toggle('active', gameState.policies.tourism);
+        }
+
+        // Event Handlers
+        function setupEventListeners() {
+            // Sliders
+            document.getElementById('rate').addEventListener('input', (e) => {
+                gameState.policies.rate = validateInput(e.target, 5, 20);
+                updateUI();
+            });
+
+            document.getElementById('money-supply').addEventListener('input', (e) => {
+                gameState.policies.moneySupply = validateInput(e.target, 80, 120);
+                updateUI();
+            });
+
+            document.getElementById('spending').addEventListener('input', (e) => {
+                gameState.policies.spending = validateInput(e.target, 15, 35);
+                updateUI();
+            });
+
+            document.getElementById('tax-rate').addEventListener('input', (e) => {
+                gameState.policies.taxRate = validateInput(e.target, 10, 30);
+                updateUI();
+            });
+
+            document.getElementById('fund-usage').addEventListener('input', (e) => {
+                gameState.policies.fundUsage = validateInput(e.target, 0, 50);
+                updateUI();
+            });
+
+            document.getElementById('fpi-openness').addEventListener('input', (e) => {
+                gameState.policies.fpiOpenness = validateInput(e.target, 0, 100);
+                updateUI();
+            });
+
+            document.getElementById('healthcare').addEventListener('input', (e) => {
+                gameState.policies.healthcare = validateInput(e.target, 2, 6);
+                updateUI();
+            });
+
+            document.getElementById('education').addEventListener('input', (e) => {
+                gameState.policies.education = validateInput(e.target, 3, 8);
+                updateUI();
+            });
+
+            document.getElementById('social-benefits').addEventListener('input', (e) => {
+                gameState.policies.socialBenefits = validateInput(e.target, 1, 5);
+                updateUI();
+            });
+
+            // Selects
+            document.getElementById('exchange-regime').addEventListener('change', (e) => {
+                gameState.policies.exchangeRegime = e.target.value;
+                updateUI();
+            });
+
+            document.getElementById('trade-agreement').addEventListener('change', (e) => {
+                gameState.policies.tradeAgreement = e.target.value;
+                updateUI();
+            });
+
+            // Structural policy buttons
+            document.getElementById('btn-industry').addEventListener('click', () => {
+                gameState.policies.industry = !gameState.policies.industry;
+                updateUI();
+            });
+
+            document.getElementById('btn-sme').addEventListener('click', () => {
+                gameState.policies.sme = !gameState.policies.sme;
+                updateUI();
+            });
+
+            document.getElementById('btn-agro').addEventListener('click', () => {
+                gameState.policies.agro = !gameState.policies.agro;
+                updateUI();
+            });
+
+            document.getElementById('btn-tech').addEventListener('click', () => {
+                gameState.policies.tech = !gameState.policies.tech;
+                updateUI();
+            });
+
+            document.getElementById('btn-tourism').addEventListener('click', () => {
+                gameState.policies.tourism = !gameState.policies.tourism;
+                updateUI();
+            });
+
+            // Next quarter
+            document.getElementById('next-quarter').addEventListener('click', nextQuarter);
+
+            // Restart
+            document.getElementById('restart-btn').addEventListener('click', restartGame);
+        }
+
+        // Simulation Engine
+        function nextQuarter() {
+            // Advance time
+            gameState.quarterCount++;
+            gameState.currentQuarter.quarter++;
+            if (gameState.currentQuarter.quarter > 4) {
+                gameState.currentQuarter.quarter = 1;
+                gameState.currentQuarter.year++;
+            }
+
+            // Simulate quarter effects
+            simulateQuarter();
+
+            // Record history
+            Object.keys(gameState.kpis).forEach(key => {
+                gameState.kpiHistory[key].push(gameState.kpis[key]);
+            });
+
+            // Update UI
+            updateUI();
+            updateDebugPanel();
+
+            // Check if game over
+            if (gameState.quarterCount >= gameState.maxQuarters) {
+                endGame();
+            }
+        }
+
+        function simulateQuarter() {
+            const prev = {...gameState.kpis};
+
+            // Ensure GDP doesn't go too extreme
+            const gdpMin = 50;
+            const gdpMax = 500;
+
+            // Monetary policy effects
+            const rateEffect = (gameState.policies.rate - 10) / 10;
+            
+            // Inflation control via rate (higher rate = lower inflation)
+            const rateInflationEffect = rateEffect * -2;
+            gameState.kpis.inflation = Math.max(0.5, Math.min(15, 
+                gameState.kpis.inflation + rateInflationEffect + (Math.random() - 0.5) * 0.8
+            ));
+
+            // GDP growth response to rate changes
+            const rateGdpEffect = rateEffect * -1.5;
+            const spendingEffect = (gameState.policies.spending - 25) / 10;
+            let gdpGrowthBase = 3 + rateGdpEffect + spendingEffect * 1.2 + (Math.random() - 0.5) * 1;
+            gameState.kpis.gdpGrowth = Math.max(-5, Math.min(10, gdpGrowthBase));
+
+            // Exchange rate effects
+            const inflDiff = gameState.kpis.inflation - 5;
+            if (gameState.policies.exchangeRegime === 'fixed') {
+                gameState.kpis.exchangeRate += (Math.random() - 0.5) * 2; // Stable
+            } else if (gameState.policies.exchangeRegime === 'managed') {
+                gameState.kpis.exchangeRate += inflDiff * 3 + (Math.random() - 0.5) * 5; // Moderate
+            } else {
+                gameState.kpis.exchangeRate += inflDiff * 4 + (Math.random() - 0.5) * 15; // Volatile
+            }
+
+            // Ensure exchange rate in reasonable bounds
+            gameState.kpis.exchangeRate = Math.max(250, Math.min(500, gameState.kpis.exchangeRate));
+
+            // Budget balance calculation
+            const revenueEffect = gameState.policies.taxRate / 100;
+            const spendingPressure = gameState.policies.spending;
+            gameState.kpis.budgetBalance = 2 + revenueEffect - spendingPressure * 0.15 + gameState.kpis.gdpGrowth * 0.2;
+
+            // Structural policy effects (long-term benefits)
+            if (gameState.policies.industry) {
+                gameState.kpis.oilDependency = Math.max(10, gameState.kpis.oilDependency - 0.5);
+                gameState.kpis.gdpGrowth += 0.3;
+                gameState.kpis.foreignInvestment += 0.2;
+            }
+
+            if (gameState.policies.sme) {
+                gameState.kpis.unemployment = Math.max(2, gameState.kpis.unemployment - 0.3);
+                gameState.kpis.publicTrust = Math.min(95, gameState.kpis.publicTrust + 1.5);
+                gameState.kpis.gdpGrowth += 0.2;
+            }
+
+            if (gameState.policies.agro) {
+                gameState.kpis.inflation = Math.max(1, gameState.kpis.inflation - 0.3);
+                gameState.kpis.unemployment = Math.max(2, gameState.kpis.unemployment - 0.1);
+                gameState.kpis.gdpGrowth += 0.15;
+            }
+
+            if (gameState.policies.tech) {
+                // Delayed effect - more impactful in later quarters
+                const techBonus = gameState.quarterCount > 15 ? 0.6 : 0.2;
+                gameState.kpis.gdpGrowth += techBonus;
+                gameState.kpis.foreignInvestment += 0.3;
+                if (gameState.quarterCount > 20) {
+                    gameState.kpis.oilDependency = Math.max(8, gameState.kpis.oilDependency - 0.3);
+                }
+            }
+
+            if (gameState.policies.tourism) {
+                gameState.kpis.foreignInvestment += 0.25;
+                gameState.kpis.gdpGrowth += 0.15;
+                gameState.kpis.publicTrust += 0.5;
+            }
+
+            // Social policy effects on trust
+            const socialBenefitsEffect = gameState.policies.socialBenefits;
+            const healthQualityEffect = gameState.policies.healthcare / 10;
+            const educationEffect = gameState.policies.education / 20;
+            
+            gameState.kpis.publicTrust = Math.min(100, gameState.kpis.publicTrust + 
+                socialBenefitsEffect * 1.5 + healthQualityEffect * 2 - Math.max(0, gameState.kpis.unemployment - 5) * 2
+            );
+
+            // Phillips Curve - relationship between unemployment and inflation
+            const unemploymentEffect = (5 - gameState.kpis.unemployment) * 0.4;
+            gameState.kpis.inflation += unemploymentEffect;
+
+            // FPI effects
+            const fpiOpenness = gameState.policies.fpiOpenness;
+            gameState.kpis.foreignInvestment = Math.max(1, gameState.kpis.foreignInvestment + 
+                (fpiOpenness / 100) * 0.5 - (gameState.kpis.inflation - 5) * 0.2
+            );
+
+            // External shocks
+            if (Math.random() < 0.12) {
+                applyRandomShock();
+            }
+
+            // Reserve/Fund management
+            const fundUsageAmount = gameState.nationalFund * (gameState.policies.fundUsage / 100);
+            gameState.nationalFund -= fundUsageAmount;
+            
+            // Add positive budget contribution to reserves
+            if (gameState.kpis.budgetBalance > 0) {
+                gameState.reserves += gameState.kpis.budgetBalance * 2;
+            } else {
+                gameState.reserves += gameState.kpis.budgetBalance * 1.5;
+            }
+
+            gameState.reserves = Math.max(10, Math.min(100, gameState.reserves));
+
+            // GDP calculation (using growth rate)
+            gameState.kpis.gdp = gameState.kpis.gdp * (1 + gameState.kpis.gdpGrowth / 400);
+            gameState.kpis.gdp = Math.max(gdpMin, Math.min(gdpMax, gameState.kpis.gdp));
+
+            // Dynamic unemployment based on growth
+            gameState.kpis.unemployment = Math.max(1, Math.min(15, 
+                gameState.kpis.unemployment - gameState.kpis.gdpGrowth * 0.15 + (Math.random() - 0.5) * 0.5
+            ));
+
+            // Final bounds to keep values reasonable
+            gameState.kpis.inflation = Math.max(0.5, Math.min(20, gameState.kpis.inflation));
+            gameState.kpis.oilDependency = Math.max(8, Math.min(60, gameState.kpis.oilDependency));
+            gameState.kpis.publicTrust = Math.max(10, Math.min(100, gameState.kpis.publicTrust));
+
+            // Add events based on significant changes
+            if (Math.abs(gameState.kpis.inflation - prev.inflation) > 1.5) {
+                const dir = gameState.kpis.inflation > prev.inflation ? 'выросла' : 'упала';
+                const type = gameState.kpis.inflation > 7 ? 'negative' : gameState.kpis.inflation < 2 ? 'negative' : 'positive';
+                addEvent(`Инфляция ${dir} до ${gameState.kpis.inflation.toFixed(1)}%`, type);
+            }
+
+            if (Math.abs(gameState.kpis.gdpGrowth - prev.gdpGrowth) > 1.2) {
+                const dir = gameState.kpis.gdpGrowth > prev.gdpGrowth ? 'ускорилось' : 'замедлилось';
+                const type = gameState.kpis.gdpGrowth > 4 ? 'positive' : gameState.kpis.gdpGrowth < 2 ? 'negative' : 'neutral';
+                addEvent(`Экономический рост ${dir} до ${gameState.kpis.gdpGrowth.toFixed(1)}%`, type);
+            }
+
+            if (Math.abs(gameState.kpis.unemployment - prev.unemployment) > 0.8) {
+                const dir = gameState.kpis.unemployment > prev.unemployment ? 'выросла' : 'снизилась';
+                const type = gameState.kpis.unemployment > 6 ? 'negative' : 'positive';
+                addEvent(`Безработица ${dir} до ${gameState.kpis.unemployment.toFixed(1)}%`, type);
+            }
+
+            // Log to console for debugging
+            console.log(`Q${gameState.currentQuarter.quarter} ${gameState.currentQuarter.year}:`, {
+                gdpGrowth: gameState.kpis.gdpGrowth.toFixed(2),
+                inflation: gameState.kpis.inflation.toFixed(2),
+                unemployment: gameState.kpis.unemployment.toFixed(2),
+                exchangeRate: gameState.kpis.exchangeRate.toFixed(0),
+                budgetBalance: gameState.kpis.budgetBalance.toFixed(2),
+                oilDependency: gameState.kpis.oilDependency.toFixed(1),
+                publicTrust: gameState.kpis.publicTrust.toFixed(0)
+            });
+        }
+
+        function applyRandomShock() {
+            const shocks = [
+                {
+                    text: 'Цены на нефть упали на 25%',
+                    effect: () => {
+                        gameState.kpis.gdpGrowth -= 1.5;
+                        gameState.kpis.budgetBalance -= 2;
+                        gameState.reserves -= 5;
+                    }
+                },
+                {
+                    text: 'Мировая рецессия: спрос на экспорт упал',
+                    effect: () => {
+                        gameState.kpis.gdpGrowth -= 1;
+                        gameState.kpis.foreignInvestment -= 1;
+                    }
+                },
+                {
+                    text: 'Засуха в сельской местности',
+                    effect: () => {
+                        gameState.kpis.inflation += 1.5;
+                        gameState.kpis.gdpGrowth -= 0.5;
+                    }
+                },
+                {
+                    text: 'Инвесторы повысили рейтинг страны',
+                    effect: () => {
+                        gameState.kpis.foreignInvestment += 2;
+                        gameState.kpis.publicTrust += 5;
+                    }
+                },
+                {
+                    text: 'Девальвация тенге ускорилась',
+                    effect: () => {
+                        gameState.kpis.exchangeRate += 40;
+                        gameState.kpis.inflation += 1;
+                    }
+                }
+            ];
+
+            const shock = shocks[Math.floor(Math.random() * shocks.length)];
+            shock.effect();
+            addEvent(shock.text, shock.text.includes('упал') || shock.text.includes('упала') || shock.text.includes('Девальв') || shock.text.includes('Засуха') ? 'negative' : 'positive');
+        }
+
+        function endGame() {
+            // Calculate final grade
+            const scores = calculateFinalScores();
+            const avgScore = Object.values(scores).reduce((a, b) => a + b) / Object.values(scores).length;
+            
+            let grade = 'F';
+            if (avgScore >= 90) grade = 'A+';
+            else if (avgScore >= 85) grade = 'A';
+            else if (avgScore >= 80) grade = 'B+';
+            else if (avgScore >= 75) grade = 'B';
+            else if (avgScore >= 70) grade = 'C+';
+            else if (avgScore >= 60) grade = 'C';
+            else if (avgScore >= 50) grade = 'D';
+
+            // Display final screen
+            document.getElementById('final-grade').textContent = grade;
+
+            const kpiList = document.getElementById('final-kpi-list');
+            kpiList.innerHTML = '';
+
+            const kpiConfigs = [
+                { key: 'gdpGrowth', label: 'Рост ВВП', unit: '%' },
+                { key: 'inflation', label: 'Инфляция', unit: '%' },
+                { key: 'unemployment', label: 'Безработица', unit: '%' },
+                { key: 'budgetBalance', label: 'Бюджет', unit: '% ВВП' },
+                { key: 'oilDependency', label: 'Нефт. зав.', unit: '%' },
+                { key: 'publicTrust', label: 'Доверие', unit: '/100' },
+                { key: 'exchangeRate', label: 'Курс тенге', unit: '₸/$' },
+                { key: 'foreignInvestment', label: 'ИПИ', unit: 'млрд $' }
+            ];
+
+            kpiConfigs.forEach(config => {
+                const score = scores[config.key];
+                let statusClass = score >= 70 ? 'green' : score >= 50 ? 'yellow' : 'red';
+                
+                const item = document.createElement('div');
+                item.className = `final-kpi-item ${statusClass}`;
+                item.innerHTML = `
+                    <div class="final-kpi-name">${config.label}</div>
+                    <div class="final-kpi-values">
+                        <span>${gameState.kpis[config.key].toFixed(1)}${config.unit}</span>
+                        <span style="color: #ffd93d;">Score: ${score.toFixed(0)}</span>
+                    </div>
+                `;
+                kpiList.appendChild(item);
+            });
+
+            // Generate narrative
+            const narrative = generateFinalNarrative();
+            document.getElementById('final-narrative').textContent = narrative;
+
+            document.getElementById('final-modal').classList.add('active');
+        }
+
+        function calculateFinalScores() {
+            // Score each KPI based on targets
+            return {
+                gdpGrowth: Math.min(100, Math.max(0, gameState.kpis.gdpGrowth * 15)),
+                inflation: Math.min(100, Math.max(0, 100 - Math.abs(gameState.kpis.inflation - 5) * 5)),
+                unemployment: Math.min(100, Math.max(0, (10 - gameState.kpis.unemployment) * 10)),
+                budgetBalance: Math.min(100, gameState.kpis.budgetBalance + 100) / 2,
+                oilDependency: Math.min(100, 100 - gameState.kpis.oilDependency * 2),
+                publicTrust: gameState.kpis.publicTrust,
+                exchangeRate: Math.min(100, Math.max(0, 100 - Math.abs(gameState.kpis.exchangeRate - 380) / 5)),
+                foreignInvestment: Math.min(100, gameState.kpis.foreignInvestment * 10)
+            };
+        }
+
+        function generateFinalNarrative() {
+            const narratives = [];
+
+            if (gameState.kpis.oilDependency < 20) {
+                narratives.push("Successfully diversified the economy — oil dependency significantly reduced.");
+            } else if (gameState.kpis.oilDependency > 40) {
+                narratives.push("The economy remains vulnerable to oil price fluctuations.");
+            }
+
+            if (gameState.kpis.inflation < 4) {
+                narratives.push("Achieved stable price levels with minimal inflation.");
+            } else if (gameState.kpis.inflation > 7) {
+                narratives.push("High inflation remains, eroding purchasing power.");
+            }
+
+            if (gameState.kpis.unemployment < 4) {
+                narratives.push("Strong labor market with low unemployment rates.");
+            } else if (gameState.kpis.unemployment > 6) {
+                narratives.push("High unemployment created social tensions.");
+            }
+
+            if (gameState.kpis.publicTrust > 70) {
+                narratives.push("Public confidence in government remains solid — a strong foundation for future reforms.");
+            } else if (gameState.kpis.publicTrust < 40) {
+                narratives.push("Public trust eroded — political instability threatens reforms.");
+            }
+
+            if (gameState.kpis.budgetBalance > 0) {
+                narratives.push("Budget surplus enabled reserve accumulation and debt reduction.");
+            } else if (gameState.kpis.budgetBalance < -3) {
+                narratives.push("Chronic budget deficits require urgent structural reforms.");
+            }
+
+            return narratives.length > 0 ? narratives.join(" ") : "Kazakhstan completed the period with mixed economic results.";
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+
+        // TUTORIAL SYSTEM
+        const tutorials = [
+            {
+                title: 'Welcome to EconoSim KZ!',
+                content: `
+                    <div class="tutorial-section">
+                        <p>This is a browser-based economic simulation of Kazakhstan. You take the role of an economic advisor and manage the nation's economy over 10 years (40 quarters).</p>
+                        <div class="tutorial-highlight">
+                            <strong>Your Goal:</strong> Bring key economic indicators to target values without triggering a crisis.
+                        </div>
+                        <p><strong>Timeline:</strong> Each step = 1 quarter (3 months). From Q1 2015 to Q4 2024.</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Main Screen Overview',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Left Panel - Control Console</h3>
+                        <p>Here are all the levers to influence the economy:</p>
+                        <ul>
+                            <li><strong>Monetary Policy</strong> - interest rates, exchange regime, money supply</li>
+                            <li><strong>Fiscal Policy</strong> - spending, taxes, National Fund</li>
+                            <li><strong>Structural Policy</strong> - development programs (toggle buttons)</li>
+                            <li><strong>External Economic Policy</strong> - trade agreements, investment openness</li>
+                            <li><strong>Social Policy</strong> - healthcare, education, social benefits</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                title: 'Dashboard Center & Right',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Center - Dashboard</h3>
+                        <ul>
+                            <li><strong>Regional Map</strong> - click for regional details</li>
+                            <li><strong>KPI Panel</strong> - 8 key indicators with color status</li>
+                            <li><strong>Trend Charts</strong> - recent quarter dynamics</li>
+                        </ul>
+                        <h3>Right - Event Feed</h3>
+                        <p>Displays quarterly events: indicator changes, external shocks, policy effects.</p>
+                    </div>
+                `
+            },
+            {
+                title: '8 Key Performance Indicators (KPIs)',
+                content: `
+                    <div class="tutorial-section">
+                        <ul>
+                            <li><strong>GDP Growth</strong> - target 4-6% annually (green). Below 2% = red</li>
+                            <li><strong>Inflation</strong> - target 4-6% (green). Above 10% or below 1% = red</li>
+                            <li><strong>Unemployment</strong> - target below 5% (green). Above 9% = critical</li>
+                            <li><strong>Tenge Exchange Rate</strong> - optimal 380-400 ₸/$ (green)</li>
+                            <li><strong>Budget</strong> - aim for surplus or small deficit (green)</li>
+                            <li><strong>Oil Dependency</strong> - lower = better (green &lt;30%)</li>
+                            <li><strong>Public Trust</strong> - 0-100 scale. Critical if &lt;30</li>
+                            <li><strong>Foreign Investment</strong> - more = better (green &gt;7B $)</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                title: 'How to Make Decisions',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Sliders & Dropdowns</h3>
+                        <p>Adjust sliders for interest rates, spending, and taxes. Select options from dropdowns.</p>
+                        <h3>Program Buttons</h3>
+                        <p>Click structural policy buttons (Industrialization, SME, Agriculture, etc.) to activate long-term programs.</p>
+                        <h3>Constraint</h3>
+                        <p>Make 3-4 major changes per quarter — reflects real policy constraints. You can adjust values anytime!</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Decision Consequences Example',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Tool: Raising the Base Rate</h3>
+                        <ul>
+                            <li>✓ Inflation decreases</li>
+                            <li>✓ Tenge strengthens (attracts investment)</li>
+                            <li>✗ GDP falls (less business credit)</li>
+                            <li>✗ Unemployment rises (cost-cutting)</li>
+                        </ul>
+                        <p><strong>Lesson:</strong> Every decision has tradeoffs. Find balance!</p>
+                    </div>
+                `
+            },
+            {
+                title: 'External Shocks & Risks',
+                content: `
+                    <div class="tutorial-section">
+                        <p>Every few quarters a random event occurs:</p>
+                        <ul>
+                            <li><strong>Oil Price Crash</strong> - hits GDP and budget</li>
+                            <li><strong>Global Recession</strong> - demand falls, investment leaves</li>
+                            <li><strong>Drought</strong> - inflation rises, GDP falls</li>
+                            <li><strong>Positive Events</strong> - rating upgrade, investment surge</li>
+                        </ul>
+                        <p>You cannot prevent them, but you can respond with good timing!</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Final Screen & Scoring',
+                content: `
+                    <div class="tutorial-section">
+                        <p>After 40 quarters you receive:</p>
+                        <ul>
+                            <li><strong>Overall Grade</strong> - F through A+ based on all KPIs</li>
+                            <li><strong>Detailed Results</strong> - each KPI with scores</li>
+                            <li><strong>Narrative</strong> - analysis of your performance</li>
+                        </ul>
+                        <p>Compare your results to real Kazakhstan 2015-2024 history!</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Strategy Tips',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>Long-Term Programs</h3>
+                        <p>Enable Tech Hub, Industrialization, and education early — they deliver results in 10-20 quarters.</p>
+                        <h3>Diversification</h3>
+                        <p>Kazakhstan depends heavily on oil (35% GDP). Reduce this through industrialization and new sectors.</p>
+                        <h3>Inflation Control</h3>
+                        <p>High inflation (&gt;7%) destroys trust. Use interest rates!</p>
+                        <h3>Budget Balance</h3>
+                        <p>Avoid massive deficits — they increase debt and hurt credit ratings.</p>
+                    </div>
+                `
+            },
+            {
+                title: 'Ready to Lead?',
+                content: `
+                    <div class="tutorial-section">
+                        <h3>You're Prepared!</h3>
+                        <p>Now close this tutorial and start managing Kazakhstan's economy!</p>
+                        <div class="tutorial-highlight">
+                            <strong>Remember:</strong> Every decision has delayed effects. Think long-term, don't panic-change everything.
+                        </div>
+                        <p style="margin-top: 15px;">Click "?" in the lower right corner anytime to return to this guide.</p>
+                    </div>
+                `
+            }
+        ];
+
+        let currentTutorialPage = 0;
+
+        function setupTutorial() {
+            const helpBtn = document.getElementById('help-btn');
+            const modal = document.getElementById('tutorial-modal');
+
+            if (!helpBtn) return;
+
+            helpBtn.addEventListener('click', showTutorial);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeTutorial();
+            });
+        }
+
+        function showTutorial() {
+            currentTutorialPage = 0;
+            displayTutorialPage();
+            document.getElementById('tutorial-modal').classList.add('active');
+        }
+
+        function closeTutorial() {
+            document.getElementById('tutorial-modal').classList.remove('active');
+        }
+
+        function displayTutorialPage() {
+            const content = document.getElementById('tutorial-content');
+            const page = tutorials[currentTutorialPage];
+
+            let html = `
+                <h2>${page.title}</h2>
+                ${page.content}
+            `;
+
+            if (currentTutorialPage < tutorials.length - 1) {
+                html += `
+                    <div class="tutorial-buttons">
+                        <button class="tutorial-btn close" onclick="closeTutorial()">Close</button>
+                        <button class="tutorial-btn next" onclick="nextTutorialPage()">Next →</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="tutorial-buttons">
+                        <button class="tutorial-btn next" onclick="closeTutorial(); startGame()">Start Game!</button>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="tutorial-indicator">Page ${currentTutorialPage + 1} / ${tutorials.length}</div>
+            `;
+
+            content.innerHTML = html;
+        }
+
+        function nextTutorialPage() {
+            if (currentTutorialPage < tutorials.length - 1) {
+                currentTutorialPage++;
+                displayTutorialPage();
+            }
+        }
+
+        function startGame() {
+            // Game is already started, just close tutorial
+        }
+
+        // DEBUG SYSTEM
+        function setupDebug() {
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'd') {
+                    e.preventDefault();
+                    const panel = document.getElementById('debug-panel');
+                    panel.classList.toggle('active');
+                    updateDebugPanel();
+                }
+            });
+        }
+
+        function updateDebugPanel() {
+            const panel = document.getElementById('debug-panel');
+            if (!panel.classList.contains('active')) return;
+
+            const debugInfo = {
+                'Quarter': `Q${gameState.currentQuarter.quarter} ${gameState.currentQuarter.year}`,
+                'Number': gameState.quarterCount + ' of ' + gameState.maxQuarters,
+                'GDP': gameState.kpis.gdp.toFixed(1),
+                'Growth': gameState.kpis.gdpGrowth.toFixed(2) + '%',
+                'Inflation': gameState.kpis.inflation.toFixed(2) + '%',
+                'Unemployment': gameState.kpis.unemployment.toFixed(2) + '%',
+                'Tenge': gameState.kpis.exchangeRate.toFixed(0),
+                'Budget': gameState.kpis.budgetBalance.toFixed(2) + '%',
+                'Oil Dep.': gameState.kpis.oilDependency.toFixed(0) + '%',
+                'Trust': gameState.kpis.publicTrust.toFixed(0) + '/100',
+                'Reserves': gameState.reserves.toFixed(0) + 'B$',
+                'Events': gameState.events.length,
+                'Rate': gameState.policies.rate.toFixed(1) + '%'
+            };
+
+            panel.innerHTML = '<strong>DEBUG (Ctrl+D)</strong>' +
+                Object.entries(debugInfo).map(([k, v]) => `<div><span>${k}:</span> ${v}</div>`).join('');
+        }
+
+        // Draw map - improved version
+        function drawMap() {
+            const canvas = document.getElementById('map-canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+
+            // Background
+            ctx.fillStyle = '#0d0d0d';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Map regions data (normalized 0-100 coordinates)
+            const regionsData = [
+                { name: 'Atyrau', x: 15, y: 35, w: 12, h: 15, specialization: 'Oil & Gas' },
+                { name: 'Mangystau', x: 8, y: 60, w: 10, h: 14, specialization: 'Oil' },
+                { name: 'West KZ', x: 20, y: 50, w: 15, h: 20, specialization: 'Mixed' },
+                { name: 'Aktobe', x: 28, y: 25, w: 12, h: 15, specialization: 'Oil & Agro' },
+                { name: 'Turkestan', x: 35, y: 65, w: 10, h: 12, specialization: 'Agro' },
+                { name: 'Zhambyl', x: 42, y: 50, w: 8, h: 12, specialization: 'Agro' },
+                { name: 'South KZ', x: 48, y: 60, w: 14, h: 16, specialization: 'Mixed' },
+                { name: 'Karaganda', x: 38, y: 38, w: 12, h: 14, specialization: 'Metal & Coal' },
+                { name: 'Kostanay', x: 30, y: 15, w: 12, h: 12, specialization: 'Agro' },
+                { name: 'North KZ', x: 25, y: 10, w: 8, h: 10, specialization: 'Mixed' },
+                { name: 'Pavlodar', x: 48, y: 28, w: 10, h: 12, specialization: 'Coal & Energy' },
+                { name: 'Akmola', x: 42, y: 20, w: 10, h: 12, specialization: 'Agro & Industry' },
+                { name: 'East KZ', x: 62, y: 30, w: 15, h: 20, specialization: 'Metals' },
+                { name: 'Almaty City', x: 52, y: 72, w: 6, h: 6, specialization: 'Finance & Trade' },
+                { name: 'Nur-Sultan', x: 45, y: 32, w: 5, h: 5, specialization: 'Capital' }
+            ];
+
+            const scale = Math.min(canvas.width / 80, canvas.height / 80);
+            const offsetX = (canvas.width - 80 * scale) / 2;
+            const offsetY = (canvas.height - 80 * scale) / 2;
+
+            // Draw each region
+            regionsData.forEach(region => {
+                const x = offsetX + region.x * scale;
+                const y = offsetY + region.y * scale;
+                const w = region.w * scale;
+                const h = region.h * scale;
+
+                // Color based on economic health
+                const healthIndicator = gameState.kpis.publicTrust / 100;
+                let color;
+                if (healthIndicator > 0.7) {
+                    color = '#51cf66';  // Green
+                } else if (healthIndicator > 0.5) {
+                    color = '#ffd93d';  // Yellow
+                } else if (healthIndicator > 0.3) {
+                    color = '#ff9800';  // Orange
+                } else {
+                    color = '#ff6b6b';  // Red
+                }
+
+                // Draw rectangle
+                ctx.fillStyle = color;
+                ctx.globalAlpha = 0.7;
+                ctx.fillRect(x, y, w, h);
+                ctx.globalAlpha = 1;
+
+                // Draw border
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x, y, w, h);
+
+                // Draw label
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 9px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(region.name, x + w / 2, y + h / 2 - 5);
+
+                // Make region clickable
+                canvas.regionBounds = canvas.regionBounds || [];
+                canvas.regionBounds.push({ x, y, w, h, region });
+            });
+
+            // Draw title
+            ctx.fillStyle = '#64b5f6';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Kazakhstan Regions', canvas.width / 2, 20);
+
+            ctx.fillStyle = '#aaa';
+            ctx.font = '10px Arial';
+            ctx.fillText('(color shows economic status)', canvas.width / 2, 35);
+        }
+
+        // Handle map canvas clicks
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('map-canvas');
+            if (!canvas) return;
+
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+
+                if (canvas.regionBounds) {
+                    canvas.regionBounds.forEach(bounds => {
+                        if (clickX >= bounds.x && clickX <= bounds.x + bounds.w &&
+                            clickY >= bounds.y && clickY <= bounds.y + bounds.h) {
+                            alert(`${bounds.region.name}\n\nSpecialization: ${bounds.region.specialization}\n\nEconomic Status: ${gameState.kpis.publicTrust > 70 ? 'Strong' : gameState.kpis.publicTrust > 50 ? 'Moderate' : 'Stressed'}`);
+                        }
+                    });
+                }
+            });
+        });
+        function init() {
+            setupEventListeners();
+            setupTutorial();
+            setupDebug();
+            updateUI();
+            drawMap();
+
+            // Redraw map on resize
+            window.addEventListener('resize', drawMap);
+
+            addEvent('Start of simulation. Kazakhstan, Q1 2015.', 'positive');
+            
+            // Show tutorial on first visit
+            if (!localStorage.getItem('econosim-visited')) {
+                setTimeout(() => showTutorial(), 500);
+                localStorage.setItem('econosim-visited', 'true');
+            }
+
+            console.log('=== EconoSim KZ Initialized ===');
+            console.log('Version: 1.0 (English)');
+            console.log('Max quarters: ' + gameState.maxQuarters);
+            console.log('Press Ctrl+D to toggle debug panel');
+        }
+
+        // Start game
+        init();
+        </script>
+</body>
+</html>
