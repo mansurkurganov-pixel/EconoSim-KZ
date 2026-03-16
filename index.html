@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EconoSim KZ - Economic Simulation Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0f1e;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes gridBackground {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(20px);
+            }
+        }
+
+        .scroll-reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-reveal.visible {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* Navbar */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1rem 0;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #3b82f6;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #e0e7ff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #3b82f6;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .grid-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.03;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(59, 130, 246, 0.05) 25%, rgba(59, 130, 246, 0.05) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.05) 75%, rgba(59, 130, 246, 0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(59, 130, 246, 0.05) 25%, rgba(59, 130, 246, 0.05) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.05) 75%, rgba(59, 130, 246, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            animation: gridBackground 20s linear infinite;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            z-index: 10;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Description Section */
+        .description {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .description-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #3b82f6;
+        }
+
+        .description-text p {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateX(5px);
+        }
+
+        .feature-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feature-card-title span {
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .description {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Stepper */
+        .stepper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            background: rgba(59, 130, 246, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #e0e7ff;
+        }
+
+        .step p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #e0e7ff;
+        }
+
+        .feature p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .tech-category {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 2rem;
+            border-radius: 0.75rem;
+        }
+
+        .tech-category h3 {
+            font-size: 1.2rem;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+
+        .tech-list {
+            list-style: none;
+        }
+
+        .tech-list li {
+            padding: 0.5rem 0;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tech-list li:before {
+            content: "▸";
+            color: #10b981;
+        }
+
+        .code-block {
+            background: #0a0f1e;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-top: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #10b981;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .tech-stack {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Screenshot Section */
+        .screenshot-section {
+            text-align: center;
+        }
+
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 2px dashed rgba(59, 130, 246, 0.3);
+            border-radius: 1rem;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+        }
+
+        .screenshot-caption {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+
+        /* Team Section */
+        .team {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .team-member {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .avatar-initials {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .team-member h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #e0e7ff;
+        }
+
+        .team-role {
+            color: #3b82f6;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .team-bio {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .team-achievements {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid #10b981;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, #3b82f6 0%, #10b981 100%);
+        }
+
+        .timeline-items {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.5rem;
+            align-items: flex-start;
+            position: relative;
+            margin-left: 2rem;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            order: 0;
+        }
+
+        .timeline-dot {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            border: 4px solid #0a0f1e;
+            border-radius: 50%;
+            z-index: 10;
+            flex-shrink: 0;
+            margin-top: 0.5rem;
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        }
+
+        .timeline-content {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+        }
+
+        .timeline-date {
+            color: #3b82f6;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.2rem;
+            margin: 0.5rem 0 1rem;
+            color: #e0e7ff;
+        }
+
+        .timeline-content p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+
+            .timeline-item {
+                grid-template-columns: 1fr;
+                margin-left: 60px;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content {
+                order: 0;
+            }
+        }
+
+        /* Sponsor Section */
+        .sponsor {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .sponsor h3 {
+            font-size: 0.9rem;
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        .sponsor-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .sponsor-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            border: 3px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .sponsor-info {
+            text-align: left;
+        }
+
+        .sponsor-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #e0e7ff;
+        }
+
+        .sponsor-title {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .sponsor-position {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .sponsor-aid {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 3px solid #10b981;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: left;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 1.5rem;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 15, 30, 0.95);
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 3rem 2rem 1.5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #3b82f6;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Mystery Card Section */
+        .mystery-card-container {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(59, 130, 246, 0.08) 100%);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .mystery-card-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.15);
+        }
+
+        .mystery-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .mystery-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+
+        .mystery-btn:active {
+            transform: scale(0.98);
+        }
+
+        .mystery-card-container.hidden {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1rem;
+            }
+
+            nav ul li:nth-child(3),
+            nav ul li:nth-child(4) {
+                display: none;
+            }
+
+            section {
+                padding: 3rem 1rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .stepper {
+                grid-template-columns: 1fr;
+            }
+
+            .team {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .tech-stack {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 8px;
+            }
+
+            .timeline-dot {
+                margin-top: 0.5rem;
+            }
+
+            .timeline-item {
+                grid-template-columns: auto 1fr;
+                margin-left: 1.5rem;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content {
+                order: 0;
+            }
+
+            .sponsor-content {
+                flex-direction: column;
+            }
+
+            .sponsor-info {
+                text-align: center;
+            }
+
+            .description {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="container">
+            <div class="logo">ECONOSIM KZ</div>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#tech">Technology</a></li>
+                <li><a href="#team">Team</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="grid-background"></div>
+        <div class="hero-content">
+            <h1>Manage Kazakhstan's Economy</h1>
+            <p>Interactive economic simulation for students — make real decisions, observe real consequences.</p>
+            <div class="btn-group">
+                <button onclick="switchToGame()" class="btn btn-primary">🎮 Launch Alpha Version</button>
+                <a href="#about" class="btn btn-secondary">Learn More</a>
+            </div>
+            <div class="badges">
+                <div class="badge">40 Quarters of Simulation</div>
+                <div class="badge">17 Kazakhstan Regions</div>
+                <div class="badge">5 Policy Systems</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Description -->
+    <section id="about">
+        <div class="container">
+            <h2>Why EconoSim KZ?</h2>
+            <div class="description">
+                <div class="description-text">
+                    <h3>The Problem</h3>
+                    <p>Economics is taught passively—no hands-on experience, no real decision-making. Students graduate without understanding how policy choices create consequences.</p>
+                    <h3>Our Solution</h3>
+                    <p>EconoSim KZ is the first economic simulator built on real Kazakhstan data. Players become economic advisors with full control over monetary, fiscal, structural, and social policies. Every decision creates ripple effects.</p>
+                    <h3>What Makes It Unique</h3>
+                    <p>
+                        ✓ Built on Kazakhstan's real economic statistics (2015-2024)<br>
+                        ✓ 8 interconnected KPIs reflecting real policy relationships<br>
+                        ✓ Random external shocks (oil crashes, recessions, droughts)<br>
+                        ✓ Immediate feedback on policy effectiveness<br>
+                        ✓ No external libraries—pure web technology
+                    </p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-card-title">
+                            <span>🎯</span>
+                            Practical Learning
+                        </div>
+                        <p>Test economic theories through gameplay. Cause-and-effect relationships become intuitive.</p>
+                    </div>
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-card-title">
+                            <span>🇰🇿</span>
+                            Real Kazakhstan Data
+                        </div>
+                        <p>Simulation powered by actual statistics, inflation rates, and structural conditions of Kazakhstan.</p>
+                    </div>
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-card-title">
+                            <span>⚡</span>
+                            Instant Feedback
+                        </div>
+                        <p>See how inflation, unemployment, and growth respond to your policies in real-time.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section>
+        <div class="container">
+            <h2>How the Game Works</h2>
+            <div class="stepper">
+                <div class="step scroll-reveal">
+                    <div class="step-number">1</div>
+                    <h3>Choose Your Starting Point</h3>
+                    <p>Select your starting year (2015-2019) and difficulty mode. Set your initial economic policy stance.</p>
+                </div>
+                <div class="step scroll-reveal">
+                    <div class="step-number">2</div>
+                    <h3>Control 5 Policy Systems</h3>
+                    <p>Manage monetary policy (rates, exchange regime), fiscal policy (taxes, spending), structural initiatives, external relations, and social programs.</p>
+                </div>
+                <div class="step scroll-reveal">
+                    <div class="step-number">3</div>
+                    <h3>React to Economic Shocks</h3>
+                    <p>Navigate random events: oil price crashes, global recessions, droughts, or investment surges. Test your crisis management skills.</p>
+                </div>
+                <div class="step scroll-reveal">
+                    <div class="step-number">4</div>
+                    <h3>Get Your Final Grade</h3>
+                    <p>After 40 quarters (10 years), receive an A-F grade based on economic targets. Compare your performance to real Kazakhstan history.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Functional Requirements -->
+    <section id="features">
+        <div class="container">
+            <h2>Game Features</h2>
+            <div class="features">
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📊</div>
+                    <h3>Quarterly Simulation</h3>
+                    <p>Play through 40 quarters of real-time economic management from 2015-2024.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>17 Regional Map</h3>
+                    <p>Interactive map of all Kazakhstan regions with economic status indicators.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📈</div>
+                    <h3>8 Real-Time KPIs</h3>
+                    <p>Track GDP growth, inflation, unemployment, exchange rate, budget balance, oil dependency, public trust, and foreign investment.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">🎛️</div>
+                    <h3>5 Control Systems</h3>
+                    <p>Manage monetary, fiscal, structural, external, and social policies with precision sliders.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">⚠️</div>
+                    <h3>Economic Shocks</h3>
+                    <p>Random events test your decision-making: oil crashes, recessions, droughts, rating upgrades.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📋</div>
+                    <h3>Three Game Modes</h3>
+                    <p>Historical (guided targets), Free Play (sandbox), and Challenge (strict KPI targets).</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📊</div>
+                    <h3>Final Report</h3>
+                    <p>Grade (A-F) + detailed KPI analysis + policy narrative performance review.</p>
+                </div>
+                <div class="feature scroll-reveal">
+                    <div class="feature-icon">📉</div>
+                    <h3>Trend Visualization</h3>
+                    <p>Real-time charts show GDP growth, inflation, and exchange rate trends across quarters.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Stack -->
+    <section id="tech">
+        <div class="container">
+            <h2>Technology Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-category">
+                    <h3>Frontend Architecture</h3>
+                    <ul class="tech-list">
+                        <li><strong>HTML5</strong> - Semantic markup & Canvas API</li>
+                        <li><strong>CSS3</strong> - Dark theme with gradients & animations</li>
+                        <li><strong>Vanilla JavaScript</strong> - No frameworks, pure ES6+</li>
+                        <li><strong>Canvas Graphics</strong> - Regional maps & trend charts</li>
+                        <li><strong>Google Fonts</strong> - Inter typeface</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>Game Engine & Data</h3>
+                    <ul class="tech-list">
+                        <li><strong>Economic Model</strong> - Real policy relationships</li>
+                        <li><strong>Static JSON Data</strong> - Kazakhstan historical stats</li>
+                        <li><strong>Dynamic Simulation</strong> - Quarter-to-quarter calculations</li>
+                        <li><strong>Event System</strong> - Random shock generation</li>
+                        <li><strong>State Management</strong> - Game state persistence</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-block">
+// Simplified GDP calculation engine
+function calculateGDPGrowth(rate, spending, oilPrice, shocks) {
+    let growth = 3.0; // Base growth
+    growth -= (rate - 10) * 0.15; // Rate effect
+    growth += (spending - 25) * 0.05; // Fiscal multiplier
+    growth -= Math.max(0, 30 - oilPrice) * 0.02; // Oil price
+    growth += shocks.inflow * 0.5; // External boost
+    return Math.max(-5, Math.min(10, growth));
+}
+
+// Policy cascade: inflation → exchange rate → investment
+function simulateMonetaryTransmission(policies) {
+    let inflation = 5 + (policies.rate - 10) * -0.2;
+    let exRate = 380 + (inflation - 5) * 3;
+    return { inflation, exchangeRate: exRate };
+}</div>
+
+            <p style="color: #cbd5e1; margin-top: 2rem; text-align: center; font-size: 0.95rem;">
+                <strong>Deployment:</strong> GitHub Pages | <strong>Repository:</strong> github.com/EconoSimKZ/platform
+            </p>
+        </div>
+    </section>
+
+    <!-- Prototype Screenshot -->
+    <section>
+        <div class="container" style="text-align: center;">
+            <h2>Game Interface Preview</h2>
+            <div style="display: flex; justify-content: center;">
+                <img src="./dashboard.png" alt="EconoSim Dashboard" style="width: 100%; max-width: 1000px; border-radius: 1rem; border: 2px solid rgba(59, 130, 246, 0.3); margin: 2rem 0; box-shadow: 0 20px 50px rgba(59, 130, 246, 0.1);">
+            </div>
+            <p class="screenshot-caption">Main Dashboard: Regional map, policy control panel, 8 KPIs, and live event feed</p>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team">
+        <div class="container">
+            <h2>Meet the Team</h2>
+            <div class="team">
+                <div class="team-member scroll-reveal">
+                    <div class="avatar">
+                        <div class="avatar-initials">БС</div>
+                    </div>
+                    <h3>Berikbay Sanzhar</h3>
+                    <div class="team-role">Fundraiser, Developer, Designer</div>
+                    <p class="team-bio">Designed the game concept based on actual Kazakhstan economic data. Developed simulation engine and visual interface. Passionate about making economics engaging.</p>
+                    <div class="team-achievements">
+                        <strong>🔬 Achievement:</strong> "Strong Chemists" — Applied chemistry knowledge to system optimization
+                    </div>
+                </div>
+                <div class="team-member scroll-reveal">
+                    <div class="avatar">
+                        <div class="avatar-initials">МК</div>
+                    </div>
+                    <h3>Mansur Kurganov</h3>
+                    <div class="team-role">Developer, Designer</div>
+                    <p class="team-bio">Built the interactive dashboard and real-time simulation engine. Created responsive UI for desktop and mobile. Focused on making economics intuitive and visual.</p>
+                    <div class="team-achievements">
+                        <strong>💡 Vision:</strong> "Making economics accessible to every student like me"
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section>
+        <div class="container">
+            <h2>Development Timeline</h2>
+            <div class="timeline scroll-reveal">
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 1-3, 2025</div>
+                        <h3>Design Sprint Kickoff</h3>
+                        <p>Completed game design document, researched Kazakhstan's economic indicators 2015-2024, defined policy system relationships and KPI targets.</p>
+                    </div>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 4-7, 2025</div>
+                        <h3>Core Engine Build</h3>
+                        <p>Built core simulation engine, implemented policy formula system, created dashboard UI with Canvas graphs, regional map, and event system.</p>
+                    </div>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 8-11, 2025</div>
+                        <h3>Integration & Testing</h3>
+                        <p>Alpha testing with student groups, balance economy parameters, add tutorial system, implement shock events, refine UI responsiveness.</p>
+                    </div>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 12-14, 2025</div>
+                        <h3>Launch Preparation</h3>
+                        <p>Final polish and bug fixes, publish educational materials, prepare marketing content, ready for immediate public release and integration.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Sponsor -->
+    <section>
+        <div class="container">
+            <h2 style="margin-bottom: 2rem;">Lead Sponsor</h2>
+            <div class="sponsor scroll-reveal">
+                <h3>Principal Sponsor</h3>
+                <div class="sponsor-content">
+                    <img src="./sponsor.jpg" alt="Erkebulan Karagonisov" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #3b82f6; object-fit: cover;">
+                    <div class="sponsor-info">
+                        <div class="sponsor-name">Erkebulan Karagonisov</div>
+                        <div class="sponsor-title">Director, National Bank of Kazakhstan Branch — Pavlodar</div>
+                        <div class="sponsor-position">Supported the project with essential resources and expertise</div>
+                        <div class="sponsor-aid">
+                            <strong>Sponsorship Package:</strong><br>
+                            ✓ Two premium Snickers bars<br>
+                            ✓ Unlimited 5G internet access<br>
+                            ✓ Unrestricted "Maxi Tea" peach beverages for endless coding sessions
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Before Footer -->
+    <section style="padding: 4rem 2rem;">
+        <div class="cta-section scroll-reveal">
+            <h2>Ready to Take Control?</h2>
+            <p>Step into the role of Kazakhstan's economic advisor. Make decisions. Face consequences. Learn economics through play.</p>
+            <button onclick="switchToGame()" class="btn btn-primary">🎮 Launch Alpha Version</button>
+        </div>
+    </section>
+
+    <!-- Mystery Card -->
+    <section style="padding: 4rem 2rem;">
+        <div id="mysteryCard" class="mystery-card-container scroll-reveal">
+            <img src="./mystery-card.png" alt="Mystery Card">
+            <button class="mystery-btn" onclick="removeMysteryCard()">Нажать чтобы убрать</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ECONOSIM KZ</h3>
+                <p style="color: #cbd5e1; font-size: 0.9rem;">Interactive economic simulator for studying Kazakhstan's economy through gameplay.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Project</h3>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#tech">Technology</a></li>
+                    <li><a href="#team">Team</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">GitHub Repository</a></li>
+                    <li><a href="#">Game Documentation</a></li>
+                    <li><a href="#">Educational Guide</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <ul>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">Email</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 EconoSim KZ. All rights reserved. Built with pure web technology.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll Reveal Script -->
+    <script>
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Mystery card removal function
+        function removeMysteryCard() {
+            const mysteryCard = document.getElementById('mysteryCard');
+            mysteryCard.classList.add('hidden');
+            setTimeout(() => {
+                mysteryCard.style.display = 'none';
+            }, 300);
+        }
+
+        // Game mode switcher
+        function switchToGame() {
+            const marketingContent = document.querySelectorAll('nav, section, footer');
+            const gameContainer = document.getElementById('gameContainer');
+            const backBtn = document.getElementById('backToSiteBtn');
+            
+            // Hide all marketing content
+            marketingContent.forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show game
+            gameContainer.style.display = 'block';
+            backBtn.style.display = 'block';
+            
+            // Initialize game if needed
+            if (typeof startGame === 'function') {
+                localStorage.clear();
+                startGame();
+            }
+        }
+
+        function switchToMarketing() {
+            const marketingContent = document.querySelectorAll('nav, section, footer');
+            const gameContainer = document.getElementById('gameContainer');
+            const backBtn = document.getElementById('backToSiteBtn');
+            
+            // Hide game
+            gameContainer.style.display = 'none';
+            backBtn.style.display = 'none';
+            
+            // Show marketing
+            marketingContent.forEach(el => {
+                el.style.display = '';
+            });
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    </script>
+
+    <!-- Game Container (Hidden by default) -->
+    <div id="gameContainer" style="display: none; width: 100%; height: 100vh; position: fixed; top: 0; left: 0; z-index: 9999; background: #121212;">
+        <button id="backToSiteBtn" onclick="switchToMarketing()" style="position: absolute; top: 20px; right: 20px; z-index: 10000; padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; display: none;">← Назад к сайту</button>
+        <iframe id="gameFrame" src="EconoSim_KZ.html" style="width: 100%; height: 100%; border: none; background: #121212;"></iframe>
+    </div>
+</body>
+</html>
